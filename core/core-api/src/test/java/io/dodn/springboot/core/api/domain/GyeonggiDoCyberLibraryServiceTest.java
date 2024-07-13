@@ -1,15 +1,10 @@
 package io.dodn.springboot.core.api.domain;
 
-import io.dodn.springboot.core.api.domain.response.GyeonggiDoCyberLibraryResponse;
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 
-import java.util.List;
-
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.*;
 
 class GyeonggiDoCyberLibraryServiceTest {
 
@@ -23,11 +18,11 @@ class GyeonggiDoCyberLibraryServiceTest {
     void search() throws Exception {
         //given
 
-        샘플 책 데이터 = 샘플 책 데이터 추가()
+//        검색할 책의 기본 데이터 =  검색할 책의 기본 데이터
         //when
-        List<책데이터> 책데이터 = gyeonggiDoCyberLibraryService.search();
+//        List<검색한 책> 검색한 책 = gyeonggiDoCyberLibraryService.search();
         //then
-        assertThat().isEqualTo();
+//        assertThat(기본 데이터).isEqualTo(검색한 책);
 
 //        책에 대한 정보 들을 검증한다.
 //         제목 , 책이미지 링크 , 저자 , 출판사

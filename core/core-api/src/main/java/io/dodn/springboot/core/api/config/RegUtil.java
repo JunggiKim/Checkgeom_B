@@ -9,8 +9,10 @@ import java.util.regex.Pattern;
 @Component
 public class RegUtil {
 
+    private static final String htmlTagDeletePattern = "<[^>]*>";
+
     public static String deleteHtmlTag(String target) {
-        final String htmlTagDeletePattern = "<[^>]*>";
+
 
         return target.replaceAll(htmlTagDeletePattern, "")
                 .replaceAll("&quot;", "");

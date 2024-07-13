@@ -1,10 +1,11 @@
 package io.dodn.springboot.core.api.domain;
 
-import io.dodn.springboot.core.api.config.RegUtil;
-import io.dodn.springboot.core.api.domain.response.GyeonggiDoCyberLibraryResponse;
+import io.dodn.springboot.core.api.controller.v1.request.SearchRequest;
+import io.dodn.springboot.core.api.domain.response.GyeonggiDoCyberLibraryServiceResponse;
 import io.dodn.springboot.storage.db.core.GyeonggiDoCyberLibraryRepository;
-import org.jsoup.Jsoup;
+import io.dodn.springboot.storage.db.core.response.GyeonggiDoCyberLibraryRepositoryResponse;
 import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 import org.openqa.selenium.By;
 import org.openqa.selenium.chrome.ChromeDriver;
@@ -30,55 +31,36 @@ public class GyeonggiDoCyberLibraryService {
 
     private static final Logger log = LoggerFactory.getLogger(GyeonggiDoCyberLibraryService.class);
 
-    private GyeonggiDoCyberLibraryRepository gyeonggiDoCyberLibraryRepository;
+    private final GyeonggiDoCyberLibraryRepository gyeonggiDoCyberLibraryRepository;
+
+    public GyeonggiDoCyberLibraryService(GyeonggiDoCyberLibraryRepository gyeonggiDoCyberLibraryRepository) {
+        this.gyeonggiDoCyberLibraryRepository = gyeonggiDoCyberLibraryRepository;
+    }
 
 
     // 소장형이든 구독형 최대 첫화면에서는 6개만 보여준다.
     // 그래서 숫자 값을 찾아서 만약 총값이 6개이상이라면 더보기칸을 눌러서 들어간다
-    public List<GyeonggiDoCyberLibraryResponse> search(String url) {
 
-        ChromeDriver webDriver = openBrowser(url);
+    // search 의 경우 가져오는게 api로 변경이 있을 수 있기에 AOP로 따로 뺴두도록하자 웹드라이버의 기능을
+    public GyeonggiDoCyberLibraryServiceResponse search(SearchRequest searchRequest) {
 
-        Document htmlPage = Jsoup.parse(webDriver.getPageSource());
-        getSearchBookList(htmlPage);
-
-        Elements searchBookItems = htmlPage.select("li.bookItem.row");  // 띄어쓰기를 그냥 .으로 바꿔줘야 인식을 한다.
-
-        List<GyeonggiDoCyberLibraryResponse> bookDtoList = searchBookItems.stream().map(element -> {
-            String bookImageLink = element.select("img.bookCover").attr("src");
-            String title = element.select("h6.title")
-                    .first().children()
-                    .first().text();
-            List<String> list = Arrays.stream(element.select("p.desc")
-                            .text().split("/"))
-                    .toList();  //책의 출판정보이다  bookPublishingInformation
-            // 순서 :  저자 , 출판사 , 출판 날짜
-            String loanReservationStatus = element.select("div.stat").text();
-            return GyeonggiDoCyberLibraryResponse.of(
-                    bookImageLink,
-                    title,
-                    list.get(0),
-                    list.get(1),
-                    list.get(1),
-                    loanReservationStatus
-            );
-        }).toList();
-
-        // 구독형은 최대 가능한 숫자가999씩나오고 최대값이나온다
-        // 음 그냥 다같이 보내고 프론트엔드에서 안보여주는걸로할까 고민 이네
-
-        Elements h4 = htmlPage.select("h4.summaryHeading");
+        ChromeDriver webDriver = openWebBrowser(searchRequest);
 
 
-        String totalSearchCount = h4.stream()
-                .map(element -> RegUtil.deleteHtmlTag(element.toString()))
-                .findFirst().orElse("0");
+        List<GyeonggiDoCyberLibraryServiceResponse.BookDto> bookDtoList = gyeonggiDoCyberLibraryRepository.getGyeonggiDoCyberLibraryResponse(webDriver.getPageSource())
+                .stream().map(GyeonggiDoCyberLibraryServiceResponse.BookDto::of)
+                .toList();
 
         webDriver.quit();
 
-        return bookDtoList;
+        return GyeonggiDoCyberLibraryServiceResponse.of(
+                bookDtoList,
+                bookDtoList.size()
+        );
 
     }
+
+
 
     private void getSearchBookList(Document htmlPage) {
         Elements collectibleBook = htmlPage.select("[data-type=EB]");//소장형
@@ -101,12 +83,19 @@ public class GyeonggiDoCyberLibraryService {
 
     }
 
-    private ChromeDriver openBrowser(String url) {
+    private ChromeDriver openWebBrowser(SearchRequest searchRequest) {
+        String basicSearchUrl = GyeonggiDoCyberLibrary.basicSearchUrlCreate(
+                searchRequest.searchType(),
+                searchRequest.keyword(),
+                searchRequest.listType(),
+                searchRequest.sort()
+        );
+
         ChromeDriver webDriver = createWebDriver();
         WebDriverWait webDriverWait = createWebDriverWait(webDriver);
 
-        webDriver.get(url);    //브라우저에서 url로 이동한다.
-        webDriverWait.until(     //동적 리소스를 가져오기 때문에 아래에 지정한 리소스가 생기기전까지 대기를 한다.
+        webDriver.get(basicSearchUrl);    //브라우저에서 url로 이동한다.
+        webDriverWait.until(     //동적 리소스를 가져오기 때문에 아래에 지정한 리소스가 생기기전까지 대기를 한다. 대기 하지 않을 경우 빈데이터가 올 수있음
                 ExpectedConditions.presenceOfElementLocated(By.className("searchResultBody"))
         );
         return webDriver;

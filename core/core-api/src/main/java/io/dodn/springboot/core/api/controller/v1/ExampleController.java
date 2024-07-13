@@ -1,6 +1,5 @@
 package io.dodn.springboot.core.api.controller.v1;
 
-import io.dodn.springboot.core.api.controller.v1.request.ExampleRequestDto;
 import io.dodn.springboot.core.api.controller.v1.response.ExampleResponseDto;
 import io.dodn.springboot.core.api.domain.ExampleData;
 import io.dodn.springboot.core.api.domain.ExampleResult;
