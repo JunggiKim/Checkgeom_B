@@ -1,12 +1,11 @@
 package io.dodn.springboot.core.api.domain;
 
-
 public enum GyeonggiDoCyberLibraryBookType {
 
-    COLLECTION("소장", "EB"),
-    SUBSCRIPTION("구독", "SUBS");
+    COLLECTION("소장", "EB"), SUBSCRIPTION("구독", "SUBS");
 
     private final String name;
+
     private final String type;
 
     GyeonggiDoCyberLibraryBookType(String name, String type) {
@@ -21,4 +20,5 @@ public enum GyeonggiDoCyberLibraryBookType {
     public String getName() {
         return name;
     }
+
 }

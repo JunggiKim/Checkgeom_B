@@ -31,12 +31,9 @@ public class AsyncConfig implements AsyncConfigurer {
         return new AsyncExceptionHandler();
     }
 
-
     @Bean
-    public WebClient webClient () {
+    public WebClient webClient() {
         return new WebClient();
     }
 
-
 }
-

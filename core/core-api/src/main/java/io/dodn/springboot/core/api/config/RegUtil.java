@@ -1,6 +1,5 @@
 package io.dodn.springboot.core.api.config;
 
-
 import org.springframework.stereotype.Component;
 
 import java.util.regex.Matcher;
@@ -13,10 +12,7 @@ public class RegUtil {
 
     public static String deleteHtmlTag(String target) {
 
-
-        return target.replaceAll(htmlTagDeletePattern, "")
-                .replaceAll("&quot;", "");
+        return target.replaceAll(htmlTagDeletePattern, "").replaceAll("&quot;", "");
     }
-
 
 }
