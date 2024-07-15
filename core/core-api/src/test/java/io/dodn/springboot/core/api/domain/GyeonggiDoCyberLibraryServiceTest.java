@@ -43,7 +43,7 @@ class GyeonggiDoCyberLibraryServiceTest {
 
         // then
 
-//        log.info("result = {}" , result);
+        log.info("result = {}" , result);
 
         // 책에 대한 정보 들을 검증한다.
         // 제목 , 책이미지 링크 , 저자 , 출판사

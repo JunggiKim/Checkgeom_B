@@ -24,7 +24,7 @@ public class GyeonggiDoCyberLibraryReader {
     }
 
 
-    public  List<GyeonggiDoCyberLibraryServiceResponse.BookDto> getSearchData(WebDriver webDriver) {
+    public List<GyeonggiDoCyberLibraryServiceResponse.BookDto> getSearchData(WebDriver webDriver) {
 
         String htmlPage = webDriver.getPageSource();
 
@@ -39,6 +39,9 @@ public class GyeonggiDoCyberLibraryReader {
 
     public List<GyeonggiDoCyberLibraryMoreViewType> isMoreViewList(String pageHtml) {
         Elements totalSearchBook = Jsoup.parse(pageHtml).select("h5.searchH");
+//        List<Element> test = totalSearchBook.stream().filter(element -> !element.text().contains("오디오북")).toList();
+//        test.forEach(element -> System.out.println(("제외한  값 = " +  element.text())));
+
 
         return totalSearchBook.stream()
                 .map(GyeonggiDoCyberLibraryReader::mapGyeonggiDoCyberLibraryMoreViewType)
@@ -52,6 +55,11 @@ public class GyeonggiDoCyberLibraryReader {
 
         int index = childText.indexOf("(");
         String findHtmlBookType = (index >= 0) ? childText.substring(0, index) : childText;
+
+        if (findHtmlBookType.equals("오디오북")) {
+            return null;
+        }
+        System.out.println("숫자 = " + moreViewTotalCount);
         GyeonggiDoCyberLibraryBookType bookType = GyeonggiDoCyberLibraryBookType.of(findHtmlBookType);
 
         return GyeonggiDoCyberLibraryMoreViewType.of(

@@ -44,7 +44,7 @@ public class LibraryService {
     public GyeonggiDoCyberLibraryServiceResponse search(SearchServiceRequest searchRequest) {
         String basicSearchUrl = GyeonggiDoCyberLibrary.basicSearchUrlCreate(searchRequest.keyword(),
                 searchRequest.searchType(), searchRequest.listType(), searchRequest.sort());
-        String stayType = "searchResultBody";
+        String stayType = "div.searchResultBody";
         WebDriver webDriver = openWebBrowser(basicSearchUrl , stayType);
 
 
@@ -57,9 +57,7 @@ public class LibraryService {
             moreViewLink = moreViewList.stream()
                     .map(viewType -> GyeonggiDoCyberLibrary.moreViewSearchUrlCreate(basicSearchUrl, viewType))
                     .toList();
-
         }
-
 
         List<GyeonggiDoCyberLibraryServiceResponse.BookDto> bookDtoList = gyeonggiDoCyberLibraryReader.getSearchData(webDriver);
 
