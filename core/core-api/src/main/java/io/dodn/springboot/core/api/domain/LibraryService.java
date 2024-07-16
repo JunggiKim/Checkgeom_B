@@ -1,17 +1,14 @@
 package io.dodn.springboot.core.api.domain;
 
-import io.dodn.springboot.core.api.controller.v1.request.SearchRequest;
 import io.dodn.springboot.core.api.domain.gyeonggidocyberlibrary.GyeonggiDoCyberLibrary;
 import io.dodn.springboot.core.api.domain.gyeonggidocyberlibrary.GyeonggiDoCyberLibraryMoreViewType;
 import io.dodn.springboot.core.api.domain.gyeonggidocyberlibrary.GyeonggiDoCyberLibraryReader;
 import io.dodn.springboot.core.api.domain.request.SearchServiceRequest;
 import io.dodn.springboot.core.api.domain.response.GyeonggiDoCyberLibraryServiceResponse;
-import io.dodn.springboot.storage.db.core.GyeonggiDoCyberLibraryRepository;
 import org.jsoup.nodes.Document;
 import org.jsoup.select.Elements;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import org.slf4j.Logger;
@@ -40,11 +37,11 @@ public class LibraryService {
     // 소장형이든 구독형 최대 첫화면에서는 6개만 보여준다.
     // 그래서 숫자 값을 찾아서 만약 총값이 6개이상이라면 더보기칸을 눌러서 들어간다
 
-    // search 의 경우 가져오는게 api로 변경이 있을 수 있기에 AOP로 따로 뺴두도록하자 웹드라이버의 기능을 빼 둘수가있나 한번 알아보자
-    public GyeonggiDoCyberLibraryServiceResponse search(SearchServiceRequest searchRequest) {
+    // gyeonggiDoCyberLibrarySearch 의 경우 가져오는게 api로 변경이 있을 수 있기에 AOP로 따로 뺴두도록하자 웹드라이버의 기능을 빼 둘수가있나 한번 알아보자
+    public GyeonggiDoCyberLibraryServiceResponse gyeonggiDoCyberLibrarySearch(SearchServiceRequest searchRequest) {
         String basicSearchUrl = GyeonggiDoCyberLibrary.basicSearchUrlCreate(searchRequest.keyword(),
                 searchRequest.searchType(), searchRequest.listType(), searchRequest.sort());
-        String stayType = "div.searchResultBody";
+        String stayType = "searchResultBody";
         WebDriver webDriver = openWebBrowser(basicSearchUrl , stayType);
 
 

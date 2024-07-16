@@ -39,11 +39,9 @@ public class GyeonggiDoCyberLibraryReader {
 
     public List<GyeonggiDoCyberLibraryMoreViewType> isMoreViewList(String pageHtml) {
         Elements totalSearchBook = Jsoup.parse(pageHtml).select("h5.searchH");
-//        List<Element> test = totalSearchBook.stream().filter(element -> !element.text().contains("오디오북")).toList();
-//        test.forEach(element -> System.out.println(("제외한  값 = " +  element.text())));
+        List<Element> audiobookFilterList = totalSearchBook.stream().filter(element -> !element.text().contains("오디오북")).toList();
 
-
-        return totalSearchBook.stream()
+        return audiobookFilterList.stream()
                 .map(GyeonggiDoCyberLibraryReader::mapGyeonggiDoCyberLibraryMoreViewType)
                 .toList();
     }

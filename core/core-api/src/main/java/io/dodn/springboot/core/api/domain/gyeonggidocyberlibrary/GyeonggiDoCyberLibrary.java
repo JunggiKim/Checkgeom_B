@@ -20,9 +20,9 @@ public class GyeonggiDoCyberLibrary {
 
     public static String moreViewSearchUrlCreate(String basicUrl ,GyeonggiDoCyberLibraryMoreViewType viewType) {
         return new StringBuilder().append(basicUrl)
-                .append(contentType).append(viewType.bookType())
-                .append(asc).append("desc")
-                .append(size).append(viewType.totalCount())
+                .append(contentType.getText()).append(viewType.bookType().getUrlType())
+                .append(asc.getText()).append("desc")
+                .append(size.getText()).append(viewType.totalCount())
                 .toString();
     }
 //    &contentType=SUBS&asc=desc&size=263

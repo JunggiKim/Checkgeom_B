@@ -6,8 +6,6 @@ import io.dodn.springboot.core.api.domain.response.GyeonggiDoCyberLibraryService
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.Mock;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,7 +26,7 @@ class GyeonggiDoCyberLibraryServiceTest {
 
     @DisplayName("검색한 책을 가져온다")
     @Test
-    void search() throws Exception {
+    void gyeonggiDoCyberLibrarySearch() throws Exception {
         // given
         SearchServiceRequest request = new SearchServiceRequest(
            "처음",
@@ -38,8 +36,8 @@ class GyeonggiDoCyberLibraryServiceTest {
         );
         // when
 
-        GyeonggiDoCyberLibraryServiceResponse result = libraryService.search(request);
-        // List<검색한 책> 검색한 책 = gyeonggiDoCyberLibraryService.search();
+        GyeonggiDoCyberLibraryServiceResponse result = libraryService.gyeonggiDoCyberLibrarySearch(request);
+        // List<검색한 책> 검색한 책 = gyeonggiDoCyberLibraryService.gyeonggiDoCyberLibrarySearch();
 
         // then
 
