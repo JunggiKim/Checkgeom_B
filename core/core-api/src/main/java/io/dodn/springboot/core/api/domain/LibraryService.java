@@ -53,6 +53,7 @@ public class LibraryService {
         List<GyeonggiDoCyberLibraryMoreViewType> moreViewList = gyeonggiDoCyberLibraryReader.isMoreViewList(webDriver.getPageSource());
         boolean isMoreView = moreViewList.stream().anyMatch(GyeonggiDoCyberLibraryMoreViewType::isMoreView);
 
+
         List<String> moreViewLink = new ArrayList<>();
         if (isMoreView) {
             moreViewLink = moreViewList.stream()
@@ -179,23 +180,44 @@ public class LibraryService {
         return bookDetailInfo2;
     }
 
-    public Object smallBusinessLibrarySearch(String searchKeyword) {
+    public LibraryServiceResponse smallBusinessLibrarySearch(String searchKeyword) {
 
         // TODO 기본 URL 불러오기까지는 가능하게 해놨다.
         //   이제 값을 가져오기만 하면 될듯 하다.
 
         String basicUrl = SmallBusinessLibrary.basicUrlCreate(searchKeyword);
-//        WebDriver webDriver = openWebBrowser(basicUrl, "div.contents");
         WebDriver webDriver = openWebBrowser(basicUrl, "contents");
-        String select = Jsoup.parse(webDriver.getPageSource())
-                .select("div.contents").toString();
 
-        System.out.println("나옴? = " + select);
+        Document document = Jsoup.parse(webDriver.getPageSource());
+
+        String stringTotalCount = document.select("b#book_totalDataCount").toString();
+
+        int totalCount = Integer.parseInt(stringTotalCount);
+        boolean isMoreView = MoreView.isMoreView(totalCount);
+        MoreView moreView = MoreView.of(isMoreView, totalCount);
+
+        List<String> moreViewUrlList = new ArrayList<>();
+
+
+        getSmallBusinessLibraryBookItemDtos(webDriver.getPageSource());
+
+
+        if(moreView.moreView()){
+            String moreViewUrl = SmallBusinessLibrary.moreViewUrlCreate(basicUrl, totalCount);
+            moreViewUrlList.add(moreViewUrl);
+        }
+
 
 
         webDriver.quit();
 
-        return null;
+        return LibraryServiceResponse.of();
+
+    }
+
+    private void getSmallBusinessLibraryBookItemDtos(String htmlPage) {
+        Document document = Jsoup.parse(htmlPage);
+
 
     }
 }
