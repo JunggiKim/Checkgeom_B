@@ -5,6 +5,9 @@ import static io.dodn.springboot.core.api.domain.gyeonggidocyberlibrary.Gyeonggi
 public class GyeonggiDoCyberLibrary {
 
     private static final String basicSearchURL = "https://ebook.library.kr/search?";
+    public static final String stayClassName = "searchResultBody";
+
+
 
     private GyeonggiDoCyberLibraryBookType gyeonggiDoCyberLibraryBookType;
 
@@ -15,7 +18,6 @@ public class GyeonggiDoCyberLibrary {
             .append(GyeonggiDoCyberLibraryUrlEnum.listType.getText()).append(listType)
             .append(GyeonggiDoCyberLibraryUrlEnum.sort.getText()).append(sort)
             .toString();
-
     }
 
     public static String moreViewSearchUrlCreate(String basicUrl ,GyeonggiDoCyberLibraryMoreViewType viewType) {

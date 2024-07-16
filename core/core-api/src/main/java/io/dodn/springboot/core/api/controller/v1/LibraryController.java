@@ -18,8 +18,12 @@ public class LibraryController {
 
     private final LibraryService libraryService;
 
+    //그냥 응답값을 대출 가능여부를 보내기만 하자
+
+
     @GetMapping("/api/v1/gyeonggiDoCyberLibrarySearch/search")
-    public ApiResponse<?> gyeonggiDoCyberLibrarySearch(@RequestParam("keyword") String keyword,
+    public ApiResponse<?> gyeonggiDoCyberLibrarySearch(
+                                 @RequestParam("keyword") String keyword,
                                  @RequestParam("searchType") String searchType,
                                  @RequestParam("listType") String listType,
                                  @RequestParam("sort") String sort) {
@@ -30,13 +34,9 @@ public class LibraryController {
 
     @GetMapping("/api/v1/gyeonggiEducationalElectronicLibrary/search")
     public ApiResponse<?> gyeonggiEducationalElectronicLibrarySearch(
-                                 @RequestParam("keyword") String keyword,
-                                 @RequestParam("searchType") String searchType,
-                                 @RequestParam("listType") String listType,
-                                 @RequestParam("sort") String sort) {
+                                 @RequestParam("keyword") String keyword) {
 
-        SearchRequest searchRequest = SearchRequest.of(keyword, searchType, listType, sort);
-        return ApiResponse.success(libraryService.gyeonggiDoCyberLibrarySearch(searchRequest.toServiceRequest()));
+        return ApiResponse.success(libraryService.gyeonggiEducationalElectronicLibrarySearch(keyword));
     }
 
 }

@@ -1,9 +1,8 @@
 package io.dodn.springboot.core.api.domain.gyeonggidocyberlibrary;
 
-import io.dodn.springboot.core.api.domain.response.GyeonggiDoCyberLibraryServiceResponse;
+import io.dodn.springboot.core.api.domain.response.LibraryServiceResponse;
 import io.dodn.springboot.storage.db.core.GyeonggiDoCyberLibraryRepository;
 import org.jsoup.Jsoup;
-import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 import org.openqa.selenium.WebDriver;
@@ -24,14 +23,14 @@ public class GyeonggiDoCyberLibraryReader {
     }
 
 
-    public List<GyeonggiDoCyberLibraryServiceResponse.BookDto> getSearchData(WebDriver webDriver) {
+    public List<LibraryServiceResponse.BookDto> getSearchData(WebDriver webDriver) {
 
         String htmlPage = webDriver.getPageSource();
 
         return gyeonggiDoCyberLibraryRepository
                 .getGyeonggiDoCyberLibraryResponse(htmlPage)
                 .stream()
-                .map(GyeonggiDoCyberLibraryServiceResponse.BookDto::of)
+                .map(LibraryServiceResponse.BookDto::of)
                 .toList();
 
     }

@@ -5,4 +5,5 @@
 //    dependencies {
 //        compileOnly "io.spring.javaformat:spring-javaformat-gradle-plugin:${springJavaFormatVersion}"
 //    }
+
 //}

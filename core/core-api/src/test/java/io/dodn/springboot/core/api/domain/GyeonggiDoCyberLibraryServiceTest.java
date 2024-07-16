@@ -2,7 +2,7 @@ package io.dodn.springboot.core.api.domain;
 
 import io.dodn.springboot.core.api.domain.gyeonggidocyberlibrary.GyeonggiDoCyberLibraryReader;
 import io.dodn.springboot.core.api.domain.request.SearchServiceRequest;
-import io.dodn.springboot.core.api.domain.response.GyeonggiDoCyberLibraryServiceResponse;
+import io.dodn.springboot.core.api.domain.response.LibraryServiceResponse;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
@@ -36,17 +36,27 @@ class GyeonggiDoCyberLibraryServiceTest {
         );
         // when
 
-        GyeonggiDoCyberLibraryServiceResponse result = libraryService.gyeonggiDoCyberLibrarySearch(request);
+        LibraryServiceResponse result = libraryService.gyeonggiDoCyberLibrarySearch(request);
         // List<검색한 책> 검색한 책 = gyeonggiDoCyberLibraryService.gyeonggiDoCyberLibrarySearch();
 
         // then
 
         log.info("result = {}" , result);
 
-        // 책에 대한 정보 들을 검증한다.
-        // 제목 , 책이미지 링크 , 저자 , 출판사
-        // 출판 날짜, 대출 예약 현황
 
     }
+
+            @DisplayName("example")
+            @Test
+            void gyeonggiEducationalElectronicLibrarySearch() throws Exception {
+                //given
+
+                //when
+                Object abc = libraryService.gyeonggiEducationalElectronicLibrarySearch("abc");
+
+
+                //then
+            }
+
 
 }

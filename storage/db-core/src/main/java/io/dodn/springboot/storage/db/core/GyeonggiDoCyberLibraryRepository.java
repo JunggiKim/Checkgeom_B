@@ -1,6 +1,6 @@
 package io.dodn.springboot.storage.db.core;
 
-import io.dodn.springboot.storage.db.core.response.GyeonggiDoCyberLibraryRepositoryResponse;
+import io.dodn.springboot.storage.db.core.response.LibraryRepositoryResponse;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -13,7 +13,7 @@ import java.util.List;
 @Repository
 public class GyeonggiDoCyberLibraryRepository {
 
-    public List<GyeonggiDoCyberLibraryRepositoryResponse> getGyeonggiDoCyberLibraryResponse(String html) {
+    public List<LibraryRepositoryResponse> getGyeonggiDoCyberLibraryResponse(String html) {
 
         Document htmlPage = Jsoup.parse(html);
 
@@ -25,7 +25,7 @@ public class GyeonggiDoCyberLibraryRepository {
             .toList();
     }
 
-    private static GyeonggiDoCyberLibraryRepositoryResponse getGyeonggiDoCyberLibraryRepositoryResponse(
+    private static LibraryRepositoryResponse getGyeonggiDoCyberLibraryRepositoryResponse(
             Element htmlElement) {
         String bookImageLink = getBookImgeLink(htmlElement);
         String title = getBookTitle(htmlElement);
@@ -33,7 +33,7 @@ public class GyeonggiDoCyberLibraryRepository {
         List<String> bookPublishingInformationList = getBookPublishingInformationList(htmlElement);
         String loanReservationStatus = getLoanReservationStatus(htmlElement);
 
-        return GyeonggiDoCyberLibraryRepositoryResponse.of(bookImageLink, title, bookPublishingInformationList.get(0),
+        return LibraryRepositoryResponse.of(bookImageLink, title, bookPublishingInformationList.get(0),
                 bookPublishingInformationList.get(1), bookPublishingInformationList.get(1), loanReservationStatus);
     }
 
