@@ -6,6 +6,7 @@ import io.dodn.springboot.core.api.domain.gyeonggidocyberlibrary.GyeonggiDoCyber
 import io.dodn.springboot.core.api.domain.gyeonggidocyberlibrary.GyeonggiDoCyberLibraryReader;
 import io.dodn.springboot.core.api.domain.request.SearchServiceRequest;
 import io.dodn.springboot.core.api.domain.response.LibraryServiceResponse;
+import io.dodn.springboot.core.api.domain.smallbusinesslibrary.SmallBusinessLibrary;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -50,7 +51,6 @@ public class LibraryService {
         WebDriver webDriver = openWebBrowser(basicSearchUrl, GyeonggiDoCyberLibrary.stayClassName);
 
         List<GyeonggiDoCyberLibraryMoreViewType> moreViewList = gyeonggiDoCyberLibraryReader.isMoreViewList(webDriver.getPageSource());
-
         boolean isMoreView = moreViewList.stream().anyMatch(GyeonggiDoCyberLibraryMoreViewType::isMoreView);
 
         List<String> moreViewLink = new ArrayList<>();
@@ -103,23 +103,36 @@ public class LibraryService {
 
     // 기본 검색한 책 목록과 책 총 결과 수 와 검색결과 모두 볼수있는 더보기링크 까지 보내주자
     public LibraryServiceResponse gyeonggiEducationalElectronicLibrarySearch(String keyword) {
-
-
         String searchUrl = gyeonggiEducationalElectronicLibrary.basicSearchUrlCreate(keyword);
-
-
-        List<String> moreViewLink = new ArrayList<>();
-
         WebDriver webDriver = openWebBrowser(searchUrl, "smain");
+
+        List<String> moreViewLinkList = new ArrayList<>();
+        MoreView moreView = IsMoreView(webDriver.getPageSource());
+
+        if(moreView.moreView()){
+            String moreViewUrl = gyeonggiEducationalElectronicLibrary.moreViewSearchUrlCreate(searchUrl, moreView.totalCount());
+            moreViewLinkList.add(moreViewUrl);
+        }
 
         List<LibraryServiceResponse.BookDto> bookItemDtos = getBookItemDtos(webDriver.getPageSource());
 
-
-
-
         webDriver.quit();
+        return LibraryServiceResponse.of(bookItemDtos,bookItemDtos.size(),moreViewLinkList);
+    }
 
-        return LibraryServiceResponse.of(bookItemDtos,bookItemDtos.size(),List.of());
+    private MoreView IsMoreView(String pageSource) {
+
+        Document parse = Jsoup.parse(pageSource);
+        String StringTotalCount = parse.select("b#book_totalDataCount").text();
+        int searchTotalCount = Integer.parseInt(StringTotalCount);
+
+
+        boolean moreView = MoreView.isMoreView(searchTotalCount);
+
+        return MoreView.of(
+                moreView ,
+                searchTotalCount
+        );
     }
 
     private List<LibraryServiceResponse.BookDto> getBookItemDtos(String htmlPage) {
@@ -155,10 +168,6 @@ public class LibraryService {
             //            인덱스 순서
         }
 
-        bookDtoList.forEach(bookDto -> System.out.println(bookDto.toString()));
-
-
-
         return bookDtoList;
     }
 
@@ -168,5 +177,25 @@ public class LibraryService {
         int index1 = subStringed.indexOf(":");  // 경기교육통합도서관대출 가능 여부 :  <- 문자 또 제거
         String bookDetailInfo2 = subStringed.substring(index1 + 1);
         return bookDetailInfo2;
+    }
+
+    public Object smallBusinessLibrarySearch(String searchKeyword) {
+
+        // TODO 기본 URL 불러오기까지는 가능하게 해놨다.
+        //   이제 값을 가져오기만 하면 될듯 하다.
+
+        String basicUrl = SmallBusinessLibrary.basicUrlCreate(searchKeyword);
+//        WebDriver webDriver = openWebBrowser(basicUrl, "div.contents");
+        WebDriver webDriver = openWebBrowser(basicUrl, "contents");
+        String select = Jsoup.parse(webDriver.getPageSource())
+                .select("div.contents").toString();
+
+        System.out.println("나옴? = " + select);
+
+
+        webDriver.quit();
+
+        return null;
+
     }
 }

@@ -9,6 +9,7 @@ import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -46,16 +47,32 @@ class GyeonggiDoCyberLibraryServiceTest {
 
     }
 
-            @DisplayName("example")
+            @DisplayName("경기교육전자도서관에서 검색을 한다.")
             @Test
             void gyeonggiEducationalElectronicLibrarySearch() throws Exception {
                 //given
 
                 //when
-                Object abc = libraryService.gyeonggiEducationalElectronicLibrarySearch("abc");
-
+                LibraryServiceResponse libraryServiceResponse = libraryService.gyeonggiEducationalElectronicLibrarySearch("처음");
 
                 //then
+
+                System.out.println(libraryServiceResponse);
+
+            }
+
+            @DisplayName("경기교육전자도서관에서 검색을 한다.")
+            @Test
+            void smallBusinessLibrarySearch() throws Exception {
+                //given
+
+                //when
+                Object libraryServiceResponse = libraryService.smallBusinessLibrarySearch("처음");
+
+                //then
+
+                System.out.println(libraryServiceResponse);
+
             }
 
 

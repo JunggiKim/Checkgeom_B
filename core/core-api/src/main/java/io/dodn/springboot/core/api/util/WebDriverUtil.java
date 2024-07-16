@@ -21,16 +21,15 @@ public class WebDriverUtil {
     }
 
     public static WebDriverWait createWebDriverWait(WebDriver webDriver) {
-        return new WebDriverWait(webDriver, Duration.ofMillis(10));
+        return new WebDriverWait(webDriver, Duration.ofMillis(15));
     }
 
     private static ChromeOptions createOptions() {
         ChromeOptions chromeOptions = new ChromeOptions();
         chromeOptions.addArguments("--disable-popup-blocking"); // 팝업안띄움
-        chromeOptions.addArguments("headless"); // 브라우저 안띄움
+//        chromeOptions.addArguments("headless"); // 브라우저 안띄움
         chromeOptions.addArguments("--disable-gpu"); // gpu 비활성화
-        chromeOptions.addArguments("--blink-settings=imagesEnabled=false"); // 이미지 로딩을
-                                                                            // 실행하지 않음
+        chromeOptions.addArguments("--blink-settings=imagesEnabled=false"); // 이미지 로딩을 실행하지 않음
         chromeOptions.addArguments("--mute-audio"); // 음소거 옵션
         return chromeOptions;
     }

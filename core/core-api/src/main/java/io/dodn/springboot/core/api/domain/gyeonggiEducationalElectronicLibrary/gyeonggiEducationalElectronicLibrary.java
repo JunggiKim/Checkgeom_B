@@ -1,21 +1,21 @@
 package io.dodn.springboot.core.api.domain.gyeonggiEducationalElectronicLibrary;
 
-import io.dodn.springboot.core.api.domain.gyeonggidocyberlibrary.GyeonggiDoCyberLibraryUrlEnum;
-
 public class gyeonggiEducationalElectronicLibrary {
 
+    private static final String basicSearchUrl =
+            "https://lib.goe.go.kr/elib/module/elib/search/index.do?com_code=&menu_idx=94&viewPage=1&type=&search_text=";
 
-    public static final String basicSearchUrl =
-            "https://lib.goe.go.kr/elib/module/elib/search/index.do?com_code=";
+    private static final String MORE_VIEW_COUNT ="&rowCount=";
 
 
+    public static String basicSearchUrlCreate(String searchKeyword) {
+        return new StringBuilder(basicSearchUrl).append(searchKeyword)
+                .toString();
+    }
 
-    public static String basicSearchUrlCreate(String keyword) {
-        return new StringBuilder().append(basicSearchUrl)
-                .append("&menu_idx=").append("94")
-                .append("&viewPage=").append("1")
-                .append("&type=")
-                .append("&search_text=").append(keyword)
+    public static String moreViewSearchUrlCreate(String basicUrl,int totalCount) {
+        return new StringBuilder().append(basicUrl)
+                .append(MORE_VIEW_COUNT).append(totalCount)
                 .toString();
     }
 

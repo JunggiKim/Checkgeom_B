@@ -39,4 +39,12 @@ public class LibraryController {
         return ApiResponse.success(libraryService.gyeonggiEducationalElectronicLibrarySearch(keyword));
     }
 
+
+    @GetMapping("/api/v1/smallBusinessLibrary/search")
+    public ApiResponse<?> smallBusinessLibrarySearch(
+                                 @RequestParam("keyword") String searchKeyword) {
+
+        return ApiResponse.success(libraryService.smallBusinessLibrarySearch(searchKeyword));
+    }
+
 }

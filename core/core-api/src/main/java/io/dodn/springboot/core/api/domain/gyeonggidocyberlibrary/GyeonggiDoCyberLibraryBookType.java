@@ -17,14 +17,11 @@ public enum GyeonggiDoCyberLibraryBookType {
     }
 
     public static GyeonggiDoCyberLibraryBookType of(String bookType) {
-        System.out.println("북타입 = " + bookType);
-
         return switch (bookType.trim()) {
             case "소장형" -> COLLECTION;
             case "구독형" -> SUBSCRIPTION;
-            default -> throw  new RuntimeException(bookType + "지원 하는 타입이 없습니다.");
+            default -> throw  new RuntimeException(bookType + " : 지원 하는 타입이 아닙니다.");
         };
-
     }
 
     public String getUrlType() {

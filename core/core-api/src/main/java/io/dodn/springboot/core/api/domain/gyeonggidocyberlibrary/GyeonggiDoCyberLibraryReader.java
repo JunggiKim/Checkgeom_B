@@ -15,7 +15,7 @@ import java.util.List;
 @Component
 public class GyeonggiDoCyberLibraryReader {
 
-    private static final Logger log = LoggerFactory.getLogger(GyeonggiDoCyberLibraryReader.class);
+    private final Logger log = LoggerFactory.getLogger(getClass());
     private final GyeonggiDoCyberLibraryRepository gyeonggiDoCyberLibraryRepository;
 
     public GyeonggiDoCyberLibraryReader(GyeonggiDoCyberLibraryRepository gyeonggiDoCyberLibraryRepository) {
@@ -24,7 +24,6 @@ public class GyeonggiDoCyberLibraryReader {
 
 
     public List<LibraryServiceResponse.BookDto> getSearchData(WebDriver webDriver) {
-
         String htmlPage = webDriver.getPageSource();
 
         return gyeonggiDoCyberLibraryRepository
@@ -47,7 +46,6 @@ public class GyeonggiDoCyberLibraryReader {
 
     private static GyeonggiDoCyberLibraryMoreViewType mapGyeonggiDoCyberLibraryMoreViewType(Element element) {
         String childText = element.child(0).text();
-
         String moreViewTotalCount = childText.replaceAll("[^0-9]", "");
 
         int index = childText.indexOf("(");
@@ -56,7 +54,7 @@ public class GyeonggiDoCyberLibraryReader {
         if (findHtmlBookType.equals("오디오북")) {
             return null;
         }
-        System.out.println("숫자 = " + moreViewTotalCount);
+
         GyeonggiDoCyberLibraryBookType bookType = GyeonggiDoCyberLibraryBookType.of(findHtmlBookType);
 
         return GyeonggiDoCyberLibraryMoreViewType.of(
