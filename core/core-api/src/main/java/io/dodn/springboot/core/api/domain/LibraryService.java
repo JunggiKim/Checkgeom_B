@@ -33,7 +33,7 @@ import static io.dodn.springboot.core.api.util.WebDriverUtil.createWebDriverWait
 @Transactional
 public class LibraryService {
 
-    private static final Logger log = LoggerFactory.getLogger(LibraryService.class);
+    private final Logger log = LoggerFactory.getLogger(getClass());
 
     private final GyeonggiDoCyberLibraryReader gyeonggiDoCyberLibraryReader;
 
@@ -48,12 +48,10 @@ public class LibraryService {
     public LibraryServiceResponse gyeonggiDoCyberLibrarySearch(String keyword) {
 
         String basicSearchUrl = GyeonggiDoCyberLibrary.basicSearchUrlCreate(keyword);
-
         WebDriver webDriver = openWebBrowser(basicSearchUrl, GyeonggiDoCyberLibrary.stayClassName);
 
         List<GyeonggiDoCyberLibraryMoreViewType> moreViewList = gyeonggiDoCyberLibraryReader.isMoreViewList(webDriver.getPageSource());
         boolean isMoreView = moreViewList.stream().anyMatch(GyeonggiDoCyberLibraryMoreViewType::isMoreView);
-
 
         List<String> moreViewLink = new ArrayList<>();
         if (isMoreView) {
@@ -67,7 +65,6 @@ public class LibraryService {
         webDriver.quit();
         return LibraryServiceResponse.of(bookDtoList, bookDtoList.size(), moreViewLink);
     }
-
 
     // 경기도사이버도서관 더 보기에 맞는 모든 북을 가져오는 로직
     private void moreViewBook(List<GyeonggiDoCyberLibraryMoreViewType> moreViewList, String basicSearchUrl) {
@@ -102,14 +99,13 @@ public class LibraryService {
         return webDriver;
     }
 
-
     // 기본 검색한 책 목록과 책 총 결과 수 와 검색결과 모두 볼수있는 더보기링크 까지 보내주자
     public LibraryServiceResponse gyeonggiEducationalElectronicLibrarySearch(String keyword) {
         String searchUrl = gyeonggiEducationalElectronicLibrary.basicSearchUrlCreate(keyword);
         WebDriver webDriver = openWebBrowser(searchUrl, "smain");
 
         List<String> moreViewLinkList = new ArrayList<>();
-        MoreView moreView = IsMoreView(webDriver.getPageSource());
+        MoreView moreView = gyeonggiEducationalElectronicLibraryIsMoreView(webDriver.getPageSource());
 
         if (moreView.moreView()) {
             String moreViewUrl = gyeonggiEducationalElectronicLibrary.moreViewSearchUrlCreate(searchUrl, moreView.totalCount());
@@ -122,7 +118,7 @@ public class LibraryService {
         return LibraryServiceResponse.of(bookItemDtos, bookItemDtos.size(), moreViewLinkList);
     }
 
-    private MoreView IsMoreView(String pageSource) {
+    private MoreView gyeonggiEducationalElectronicLibraryIsMoreView(String pageSource) {
         Document parse = Jsoup.parse(pageSource);
         String totalCount = parse.select("b#book_totalDataCount").text();
 

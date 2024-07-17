@@ -23,24 +23,32 @@ public class LibraryController {
 
     @GetMapping("/api/v1/gyeonggiDoCyberLibrarySearch/search")
     public ApiResponse<?> gyeonggiDoCyberLibrarySearch(
-                                 @RequestParam("keyword") String keyword) {
-
-        return ApiResponse.success(libraryService.gyeonggiDoCyberLibrarySearch(keyword));
+                                 @RequestParam String searchKeyword) {
+        validation(searchKeyword);
+        return ApiResponse.success(libraryService.gyeonggiDoCyberLibrarySearch(searchKeyword));
     }
+
 
     @GetMapping("/api/v1/gyeonggiEducationalElectronicLibrary/search")
     public ApiResponse<?> gyeonggiEducationalElectronicLibrarySearch(
-                                 @RequestParam("keyword") String keyword) {
-
-        return ApiResponse.success(libraryService.gyeonggiEducationalElectronicLibrarySearch(keyword));
+                                 @RequestParam String searchKeyword) {
+        validation(searchKeyword);
+        return ApiResponse.success(libraryService.gyeonggiEducationalElectronicLibrarySearch(searchKeyword));
     }
 
 
     @GetMapping("/api/v1/smallBusinessLibrary/search")
     public ApiResponse<?> smallBusinessLibrarySearch(
-                                 @RequestParam("keyword") String searchKeyword) {
-
+                                 @RequestParam String searchKeyword) {
+        validation(searchKeyword);
         return ApiResponse.success(libraryService.smallBusinessLibrarySearch(searchKeyword));
     }
+
+    private void validation(String searchKeyword) {
+        if(searchKeyword.isBlank()) {
+            throw new IllegalArgumentException("빈 문자열입니다.");
+        }
+    }
+
 
 }

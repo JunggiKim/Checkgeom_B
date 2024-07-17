@@ -21,7 +21,6 @@ public record LibraryServiceResponse(List<BookDto> bookDtoList, int totalCount ,
                     repositoryResponse.publicationDate(), repositoryResponse.loanAvailability());
         }
 
-
         public static LibraryServiceResponse.BookDto of(
                 String bookImageLink,
                 String title,
