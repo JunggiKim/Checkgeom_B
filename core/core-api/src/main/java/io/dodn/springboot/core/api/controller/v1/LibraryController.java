@@ -23,13 +23,9 @@ public class LibraryController {
 
     @GetMapping("/api/v1/gyeonggiDoCyberLibrarySearch/search")
     public ApiResponse<?> gyeonggiDoCyberLibrarySearch(
-                                 @RequestParam("keyword") String keyword,
-                                 @RequestParam("searchType") String searchType,
-                                 @RequestParam("listType") String listType,
-                                 @RequestParam("sort") String sort) {
+                                 @RequestParam("keyword") String keyword) {
 
-        SearchRequest searchRequest = SearchRequest.of(keyword, searchType, listType, sort);
-        return ApiResponse.success(libraryService.gyeonggiDoCyberLibrarySearch(searchRequest.toServiceRequest()));
+        return ApiResponse.success(libraryService.gyeonggiDoCyberLibrarySearch(keyword));
     }
 
     @GetMapping("/api/v1/gyeonggiEducationalElectronicLibrary/search")

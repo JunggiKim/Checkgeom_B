@@ -10,8 +10,6 @@ import java.time.Duration;
 public class WebDriverUtil {
 
     private static final String WEB_DRIVER_PATH = "C:\\toy\\chromedriver-win64\\chromedriver-win64\\chromedriver.exe"; // WebDriver
-                                                                                                                       // 경로
-
     private static final String WEB_DRIVER = "webdriver.chrome.driver";
 
     public static WebDriver createWebDriver() {

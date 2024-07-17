@@ -5,18 +5,16 @@ public record MoreView (
        int totalCount
 ){
 
-    public static MoreView of (
-            boolean moreView,
+    public static MoreView create (
             int totalCount
     ) {
-
         return new MoreView(
-                moreView,
+                isMoreView(totalCount),
                 totalCount
         );
     }
 
-    public static boolean isMoreView(int totalCount) {
+    private static boolean isMoreView(int totalCount) {
         return totalCount >= 10;
     }
 
