@@ -13,6 +13,7 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.InstanceOfAssertFactories.ATOMIC_STAMPED_REFERENCE;
 
 @SpringBootTest
 @Tag("test")
@@ -25,55 +26,53 @@ class GyeonggiDoCyberLibraryServiceTest {
     @Autowired
     GyeonggiDoCyberLibraryReader gyeonggiDoCyberLibraryReader;
 
-    @DisplayName("검색한 책을 가져온다")
+    @DisplayName("경기도 사이버도서관 에서 검색한 결과를 반환 받는다.")
     @Test
     void gyeonggiDoCyberLibrarySearch() throws Exception {
         // given
-        SearchServiceRequest request = new SearchServiceRequest(
-           "처음",
-           "all",
-           "list",
-           "publishDate"
-        );
-        // when
+        String searchKeyword = "처음";
 
-        LibraryServiceResponse result = libraryService.gyeonggiDoCyberLibrarySearch(request);
-        // List<검색한 책> 검색한 책 = gyeonggiDoCyberLibraryService.gyeonggiDoCyberLibrarySearch();
+        // when
+        LibraryServiceResponse libraryServiceResponse = libraryService.gyeonggiDoCyberLibrarySearch(searchKeyword);
 
         // then
-
-        log.info("result = {}" , result);
-
+        boolean keywordMatch = libraryServiceResponse.bookDtoList().stream()
+                .allMatch(bookDto -> bookDto.title().contains(searchKeyword));
+        assertThat(keywordMatch).isTrue();
 
     }
 
-            @DisplayName("경기교육전자도서관에서 검색을 한다.")
-            @Test
-            void gyeonggiEducationalElectronicLibrarySearch() throws Exception {
-                //given
+    @DisplayName("경기교육 전자 도서관에서 검색을 한다.")
+    @Test
+    void gyeonggiEducationalElectronicLibrarySearch() throws Exception {
 
-                //when
-                LibraryServiceResponse libraryServiceResponse = libraryService.gyeonggiEducationalElectronicLibrarySearch("처음");
+        //given
+        String searchKeyword = "처음";
 
-                //then
+        //when
+        LibraryServiceResponse libraryServiceResponse = libraryService.gyeonggiEducationalElectronicLibrarySearch(searchKeyword);
 
-                System.out.println(libraryServiceResponse);
+        //then
+        boolean keywordMatch = libraryServiceResponse.bookDtoList().stream()
+                .allMatch(bookDto -> bookDto.title().contains(searchKeyword));
+        assertThat(keywordMatch).isTrue();
 
-            }
+    }
 
-            @DisplayName("경기교육전자도서관에서 검색을 한다.")
-            @Test
-            void smallBusinessLibrarySearch() throws Exception {
-                //given
+    @DisplayName("경기교육전자도서관에서 검색을 한다.")
+    @Test
+    void smallBusinessLibrarySearch() throws Exception {
+        //given
+        String searchKeyword = "처음";
 
-                //when
-                Object libraryServiceResponse = libraryService.smallBusinessLibrarySearch("처음");
+        //when
+        LibraryServiceResponse libraryServiceResponse = libraryService.smallBusinessLibrarySearch(searchKeyword);
 
-                //then
-
-                System.out.println(libraryServiceResponse);
-
-            }
+        //then
+        boolean keywordMatch = libraryServiceResponse.bookDtoList().stream()
+                .allMatch(bookDto -> bookDto.title().contains(searchKeyword));
+        assertThat(keywordMatch).isTrue();
+    }
 
 
 }
