@@ -22,7 +22,7 @@ public class IntegrationTest {
     protected ObjectMapper objectMapper;
 
     public void example () {
-
+            String test="sd";
 
     }
 
