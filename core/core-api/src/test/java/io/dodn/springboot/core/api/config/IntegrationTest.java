@@ -21,4 +21,9 @@ public class IntegrationTest {
     @Autowired
     protected ObjectMapper objectMapper;
 
+    public void example () {
+
+
+    }
+
 }
