@@ -1,10 +1,10 @@
-package io.dodn.springboot.core.api.domain;
+package io.dodn.springboot.core.api.service;
 
+import io.dodn.springboot.core.api.domain.MoreView;
 import io.dodn.springboot.core.api.domain.gyeonggiEducationalElectronicLibrary.gyeonggiEducationalElectronicLibrary;
 import io.dodn.springboot.core.api.domain.gyeonggidocyberlibrary.GyeonggiDoCyberLibrary;
 import io.dodn.springboot.core.api.domain.gyeonggidocyberlibrary.GyeonggiDoCyberLibraryMoreViewType;
 import io.dodn.springboot.core.api.domain.gyeonggidocyberlibrary.GyeonggiDoCyberLibraryReader;
-import io.dodn.springboot.core.api.domain.request.SearchServiceRequest;
 import io.dodn.springboot.core.api.domain.response.LibraryServiceResponse;
 import io.dodn.springboot.core.api.domain.smallbusinesslibrary.SmallBusinessLibrary;
 import org.jsoup.Jsoup;

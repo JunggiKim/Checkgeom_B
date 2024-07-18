@@ -11,7 +11,7 @@ public record LibraryServiceResponse(List<BookDto> bookDtoList, int totalCount ,
     }
 
     public record BookDto(String bookImageLink, String title, String author, String publisher, String publicationDate,
-            String loanAvailability) {
+                          String loanAvailability) {
 
         public static LibraryServiceResponse.BookDto of(
                 LibraryRepositoryResponse repositoryResponse) {
@@ -30,12 +30,12 @@ public record LibraryServiceResponse(List<BookDto> bookDtoList, int totalCount ,
                 String loanAvailability
         ) {
             return new LibraryServiceResponse.BookDto(
-                     bookImageLink,
-                     title,
-                     author,
-                     publisher,
-                     publicationDate,
-                     loanAvailability
+                    bookImageLink,
+                    title,
+                    author,
+                    publisher,
+                    publicationDate,
+                    loanAvailability
             );
         }
 

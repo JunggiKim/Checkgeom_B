@@ -13,6 +13,7 @@ import java.util.List;
 @Repository
 public class GyeonggiDoCyberLibraryRepository {
 
+
     public List<LibraryRepositoryResponse> getGyeonggiDoCyberLibraryResponse(String html) {
 
         Document htmlPage = Jsoup.parse(html);
@@ -33,7 +34,8 @@ public class GyeonggiDoCyberLibraryRepository {
         List<String> bookPublishingInformationList = getBookPublishingInformationList(htmlElement);
         String loanReservationStatus = getLoanReservationStatus(htmlElement);
 
-        return LibraryRepositoryResponse.of(bookImageLink, title, bookPublishingInformationList.get(0),
+        return LibraryRepositoryResponse.of(
+                bookImageLink, title, bookPublishingInformationList.get(0),
                 bookPublishingInformationList.get(1), bookPublishingInformationList.get(1), loanReservationStatus);
     }
 
