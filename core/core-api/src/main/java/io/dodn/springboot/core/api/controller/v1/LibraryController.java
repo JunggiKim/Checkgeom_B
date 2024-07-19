@@ -43,6 +43,14 @@ public class LibraryController {
         return ApiResponse.success(libraryService.smallBusinessLibrarySearch(searchKeyword));
     }
 
+    @GetMapping("/api/v1/allLibrary/{searchKeyword}")
+    public ApiResponse<?> allLibrarySearch(
+                                 @PathVariable String searchKeyword) {
+        validation(searchKeyword);
+
+        return ApiResponse.success(libraryService.allLibrarySearch(searchKeyword));
+    }
+
     private void validation(String searchKeyword) {
 
         System.out.println("요청옴 = " + searchKeyword);

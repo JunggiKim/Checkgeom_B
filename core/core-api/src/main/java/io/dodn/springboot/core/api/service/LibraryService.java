@@ -33,6 +33,15 @@ import static io.dodn.springboot.core.api.util.WebDriverUtil.createWebDriverWait
 @Transactional
 public class LibraryService {
 
+
+
+
+    // TODO EXAMPLE
+    //      대출 가능을 트루 펄스로 값을 보내는것으로 하자
+    //      모든 도서관 검색결과 기능도 구현하기
+    //      추가 더보기해야 할 것들은 이벤트를 발행을 하고
+    //      검색을 한 후 레디스의 Map 타입으로 값을 넣고 그 안에서도 인덱스로 값을 찾으면서 무한스크롤 구현 한번 해 보자
+
     private final Logger log = LoggerFactory.getLogger(getClass());
 
     private final GyeonggiDoCyberLibraryReader gyeonggiDoCyberLibraryReader;
@@ -49,11 +58,11 @@ public class LibraryService {
 
         String basicSearchUrl = GyeonggiDoCyberLibrary.basicSearchUrlCreate(keyword);
         WebDriver webDriver = openWebBrowser(basicSearchUrl, GyeonggiDoCyberLibrary.stayClassName);
+        webDriver.quit();
+
         Document document = Jsoup.parse(webDriver.getPageSource());
 
         List<GyeonggiDoCyberLibraryMoreViewType> moreViewList = gyeonggiDoCyberLibraryReader.isMoreViewList(document);
-
-
 
         boolean isMoreView = moreViewList.stream().anyMatch(GyeonggiDoCyberLibraryMoreViewType::isMoreView);
 
@@ -66,11 +75,9 @@ public class LibraryService {
 
         List<LibraryServiceResponse.BookDto> bookDtoList = gyeonggiDoCyberLibraryReader.getSearchData(document);
 
-        webDriver.quit();
 
         String totalCount = document.select("h4.summaryHeading i").text();
 
-        System.out.println("응답 = " + bookDtoList.toString());
         return LibraryServiceResponse.of(bookDtoList, Integer.parseInt(totalCount), moreViewLink);
     }
 
@@ -235,5 +242,15 @@ public class LibraryService {
             );
         }
         throw new RuntimeException(element + " 의 정상적인 변환을 하지 못했습니다.");
+    }
+
+    public Object allLibrarySearch(String searchKeyword) {
+
+        LibraryServiceResponse smallBusinessLibraryResponse = smallBusinessLibrarySearch(searchKeyword);
+        LibraryServiceResponse gyeonggiDoCyberLibraryResponse = gyeonggiDoCyberLibrarySearch(searchKeyword);
+        LibraryServiceResponse gyeonggiEducationalElectronicLibraryResponse = gyeonggiEducationalElectronicLibrarySearch(searchKeyword);
+
+
+        return null;
     }
 }
