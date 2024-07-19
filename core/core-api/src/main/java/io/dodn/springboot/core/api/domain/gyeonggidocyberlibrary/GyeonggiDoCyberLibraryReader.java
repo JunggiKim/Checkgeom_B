@@ -3,6 +3,7 @@ package io.dodn.springboot.core.api.domain.gyeonggidocyberlibrary;
 import io.dodn.springboot.core.api.domain.response.LibraryServiceResponse;
 import io.dodn.springboot.storage.db.core.GyeonggiDoCyberLibraryRepository;
 import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 import org.openqa.selenium.WebDriver;
@@ -23,11 +24,9 @@ public class GyeonggiDoCyberLibraryReader {
     }
 
 
-    public List<LibraryServiceResponse.BookDto> getSearchData(WebDriver webDriver) {
-        String htmlPage = webDriver.getPageSource();
-
+    public List<LibraryServiceResponse.BookDto> getSearchData(Document document) {
         return gyeonggiDoCyberLibraryRepository
-                .getGyeonggiDoCyberLibraryResponse(htmlPage)
+                .getGyeonggiDoCyberLibraryResponse(document)
                 .stream()
                 .map(LibraryServiceResponse.BookDto::of)
                 .toList();
@@ -35,8 +34,8 @@ public class GyeonggiDoCyberLibraryReader {
     }
 
 
-    public List<GyeonggiDoCyberLibraryMoreViewType> isMoreViewList(String pageHtml) {
-        Elements totalSearchBook = Jsoup.parse(pageHtml).select("h5.searchH");
+    public List<GyeonggiDoCyberLibraryMoreViewType> isMoreViewList(Document document) {
+        Elements totalSearchBook = document.select("h5.searchH");
         List<Element> audiobookFilterList = totalSearchBook.stream().filter(element -> !element.text().contains("오디오북")).toList();
 
         return audiobookFilterList.stream()

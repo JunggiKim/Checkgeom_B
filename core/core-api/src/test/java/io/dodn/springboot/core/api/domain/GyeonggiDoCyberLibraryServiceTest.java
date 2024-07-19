@@ -40,7 +40,8 @@ class GyeonggiDoCyberLibraryServiceTest{
         // when
         LibraryServiceResponse libraryServiceResponse = libraryService.gyeonggiDoCyberLibrarySearch(searchKeyword);
 
-        // then
+        // then0
+
         boolean keywordMatch = libraryServiceResponse.bookDtoList().stream()
                 .allMatch(bookDto -> bookDto.title().contains(searchKeyword));
         assertThat(keywordMatch).isTrue();
@@ -64,7 +65,7 @@ class GyeonggiDoCyberLibraryServiceTest{
 
     }
 
-    @DisplayName("경기교육전자도서관에서 검색을 한다.")
+    @DisplayName("소상 공인 전자 도서관에서 검색을 한다.")
     @Test
     void smallBusinessLibrarySearch() throws Exception {
         //given
@@ -76,6 +77,7 @@ class GyeonggiDoCyberLibraryServiceTest{
         //then
         boolean keywordMatch = libraryServiceResponse.bookDtoList().stream()
                 .allMatch(bookDto -> bookDto.title().contains(searchKeyword));
+
         assertThat(keywordMatch).isTrue();
     }
 

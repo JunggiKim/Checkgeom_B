@@ -49,8 +49,12 @@ public class LibraryService {
 
         String basicSearchUrl = GyeonggiDoCyberLibrary.basicSearchUrlCreate(keyword);
         WebDriver webDriver = openWebBrowser(basicSearchUrl, GyeonggiDoCyberLibrary.stayClassName);
+        Document document = Jsoup.parse(webDriver.getPageSource());
 
-        List<GyeonggiDoCyberLibraryMoreViewType> moreViewList = gyeonggiDoCyberLibraryReader.isMoreViewList(webDriver.getPageSource());
+        List<GyeonggiDoCyberLibraryMoreViewType> moreViewList = gyeonggiDoCyberLibraryReader.isMoreViewList(document);
+
+
+
         boolean isMoreView = moreViewList.stream().anyMatch(GyeonggiDoCyberLibraryMoreViewType::isMoreView);
 
         List<String> moreViewLink = new ArrayList<>();
@@ -60,10 +64,14 @@ public class LibraryService {
                     .toList();
         }
 
-        List<LibraryServiceResponse.BookDto> bookDtoList = gyeonggiDoCyberLibraryReader.getSearchData(webDriver);
+        List<LibraryServiceResponse.BookDto> bookDtoList = gyeonggiDoCyberLibraryReader.getSearchData(document);
 
         webDriver.quit();
-        return LibraryServiceResponse.of(bookDtoList, bookDtoList.size(), moreViewLink);
+
+        String totalCount = document.select("h4.summaryHeading i").text();
+
+        System.out.println("응답 = " + bookDtoList.toString());
+        return LibraryServiceResponse.of(bookDtoList, Integer.parseInt(totalCount), moreViewLink);
     }
 
     // 경기도사이버도서관 더 보기에 맞는 모든 북을 가져오는 로직
@@ -74,8 +82,8 @@ public class LibraryService {
             //타입에 맞는 URL
             String moreViewTag = "searchResultList";
             WebDriver moreViewWebDriver = openWebBrowser(moreViewUrl, moreViewTag);
-            String moreViewHtml = moreViewWebDriver.getPageSource();
-            gyeonggiDoCyberLibraryReader.getSearchData(moreViewWebDriver);
+            Document document = Jsoup.parse(moreViewWebDriver.getPageSource());
+            gyeonggiDoCyberLibraryReader.getSearchData(document);
             // 더보기 링크 에 맞는 브라우저 오픈
         }
     }
@@ -104,32 +112,34 @@ public class LibraryService {
         String searchUrl = gyeonggiEducationalElectronicLibrary.basicSearchUrlCreate(keyword);
         WebDriver webDriver = openWebBrowser(searchUrl, "smain");
 
+        Document document = Jsoup.parse(webDriver.getPageSource());
+
         List<String> moreViewLinkList = new ArrayList<>();
-        MoreView moreView = gyeonggiEducationalElectronicLibraryIsMoreView(webDriver.getPageSource());
+        MoreView moreView = gyeonggiEducationalElectronicLibraryIsMoreView(document);
 
         if (moreView.moreView()) {
             String moreViewUrl = gyeonggiEducationalElectronicLibrary.moreViewSearchUrlCreate(searchUrl, moreView.totalCount());
             moreViewLinkList.add(moreViewUrl);
         }
 
-        List<LibraryServiceResponse.BookDto> bookItemDtos = getBookItemDtos(webDriver.getPageSource());
+        List<LibraryServiceResponse.BookDto> bookItemDtos = getBookItemDtos(document);
+
+
+        String totalCount = document.select("b#book_totalDataCount").text();
+
 
         webDriver.quit();
-        return LibraryServiceResponse.of(bookItemDtos, bookItemDtos.size(), moreViewLinkList);
+        return LibraryServiceResponse.of(bookItemDtos, Integer.parseInt(totalCount), moreViewLinkList);
     }
 
-    private MoreView gyeonggiEducationalElectronicLibraryIsMoreView(String pageSource) {
-        Document parse = Jsoup.parse(pageSource);
-        String totalCount = parse.select("b#book_totalDataCount").text();
-
+    private MoreView gyeonggiEducationalElectronicLibraryIsMoreView(Document document) {
+        String totalCount = document.select("b#book_totalDataCount").text();
         return MoreView.create(Integer.parseInt(totalCount));
     }
 
-    private List<LibraryServiceResponse.BookDto> getBookItemDtos(String htmlPage) {
+    private List<LibraryServiceResponse.BookDto> getBookItemDtos(Document document) {
 
-        Document document = Jsoup.parse(htmlPage);
         Elements select = document.select("div.row");
-
         //  제목 , 저자 , 출판사  , 출판날짜  , 대출가능여부  , 책 이미지링크 ,
 //    String bookImageLink, String title, String author, String publisher, String publicationDate,
 
@@ -191,10 +201,9 @@ public class LibraryService {
             moreViewUrlList.add(moreViewUrl);
         }
 
-
         webDriver.quit();
 
-        return LibraryServiceResponse.of(bookDtoList , bookDtoList.size() ,moreViewUrlList);
+        return LibraryServiceResponse.of(bookDtoList , Integer.parseInt(totalCount) ,moreViewUrlList);
 
     }
 

@@ -14,13 +14,9 @@ import java.util.List;
 public class GyeonggiDoCyberLibraryRepository {
 
 
-    public List<LibraryRepositoryResponse> getGyeonggiDoCyberLibraryResponse(String html) {
+    public List<LibraryRepositoryResponse> getGyeonggiDoCyberLibraryResponse(Document document) {
 
-        Document htmlPage = Jsoup.parse(html);
-
-        Elements searchBookItems = htmlPage.select("li.bookItem.row"); // 띄어쓰기를 그냥 .으로
-                                                                       // 바꿔줘야 인식을 한다.
-
+        Elements searchBookItems = document.select("li.bookItem.row");
         return searchBookItems.stream()
             .map(GyeonggiDoCyberLibraryRepository::getGyeonggiDoCyberLibraryRepositoryResponse)
             .toList();
@@ -30,13 +26,15 @@ public class GyeonggiDoCyberLibraryRepository {
             Element htmlElement) {
         String bookImageLink = getBookImgeLink(htmlElement);
         String title = getBookTitle(htmlElement);
+
         // 인덱스 순서는 작성자 , 출판사 ,출판 날짜
         List<String> bookPublishingInformationList = getBookPublishingInformationList(htmlElement);
+
         String loanReservationStatus = getLoanReservationStatus(htmlElement);
 
         return LibraryRepositoryResponse.of(
                 bookImageLink, title, bookPublishingInformationList.get(0),
-                bookPublishingInformationList.get(1), bookPublishingInformationList.get(1), loanReservationStatus);
+                bookPublishingInformationList.get(1), bookPublishingInformationList.get(2), loanReservationStatus);
     }
 
     private static String getLoanReservationStatus(Element htmlElement) {

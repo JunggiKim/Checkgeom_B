@@ -1,5 +1,6 @@
 package io.dodn.springboot.core.api.controller.v1;
 
+import io.dodn.springboot.core.api.domain.response.LibraryServiceResponse;
 import io.dodn.springboot.core.api.service.LibraryService;
 import io.dodn.springboot.core.api.support.response.ApiResponse;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -22,7 +23,8 @@ public class LibraryController {
     public ApiResponse<?> gyeonggiDoCyberLibrarySearch(
                                  @PathVariable String searchKeyword) {
         validation(searchKeyword);
-        return ApiResponse.success(libraryService.gyeonggiDoCyberLibrarySearch(searchKeyword));
+        LibraryServiceResponse libraryServiceResponse = libraryService.gyeonggiDoCyberLibrarySearch(searchKeyword);
+        return ApiResponse.success(libraryServiceResponse);
     }
 
 
@@ -45,7 +47,7 @@ public class LibraryController {
 
         System.out.println("요청옴 = " + searchKeyword);
         if(searchKeyword.isBlank()) {
-            throw new IllegalArgumentException("빈 문자열입니다.");
+            throw new IllegalArgumentException(searchKeyword + " 빈 문자열입니다.");
         }
     }
 
