@@ -1,13 +1,14 @@
-package io.dodn.springboot.core.api.domain.response;
+package io.dodn.springboot.core.api.service.response;
 
+import io.dodn.springboot.core.api.domain.Book;
 import io.dodn.springboot.storage.db.core.response.LibraryRepositoryResponse;
 
 import java.util.List;
 
-public record LibraryServiceResponse(List<BookDto> bookDtoList, int totalCount , List<String > moreViewLink) {
+public record LibraryServiceResponse(List<LibraryServiceResponse.BookDto> bookDtoList, int totalCount , List<String > moreViewLink) {
 
-    public static LibraryServiceResponse of(List<BookDto> bookDtoList, int totalCount , List<String > moreViewLink ) {
-        return new LibraryServiceResponse(bookDtoList, totalCount , moreViewLink);
+    public static LibraryServiceResponse of(List<LibraryServiceResponse.BookDto> bookList, int totalCount , List<String > moreViewLink ) {
+        return new LibraryServiceResponse(bookList, totalCount , moreViewLink);
     }
 
     public record BookDto(String bookImageLink, String title, String author, String publisher, String publicationDate,

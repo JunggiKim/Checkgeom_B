@@ -4,7 +4,6 @@ public record MoreView (
        boolean moreView,
        int totalCount
 ){
-
     public static MoreView create (
             int totalCount
     ) {

@@ -1,22 +1,23 @@
 package io.dodn.springboot.core.api.domain.gyeonggidocyberlibrary;
 
-import static io.dodn.springboot.core.api.domain.gyeonggidocyberlibrary.GyeonggiDoCyberLibraryUrlEnum.*;
 
 public class GyeonggiDoCyberLibrary {
 
-    private static final String basicSearchURL = "https://ebook.library.kr/search?searchType=all&listType=list&keyword=";
-    private static final String moreViewSearchURL = "https://ebook.library.kr/search/type?searchType=all&listType=list&asc=desc&keyword=";
-    public static final String stayClassName = "searchResultBody";
+    private static final String BASIC_SEARCH_URL = "https://ebook.library.kr/search?searchType=all&listType=list&keyword=";
+    private static final String MORE_VIEW_SEARCH_URL = "https://ebook.library.kr/search?searchType=all&listType=list&asc=desc&keyword=";
+    public static final String STAY_CSS = "h4.summaryHeading i";
+    public static final String CONTENT_TYPE_URL = "&contentType=";
+    public static final String SIZE = "&size=";
+
 
     public static String basicSearchUrlCreate(String keyword) {
-        return basicSearchURL.concat(keyword);
+        return BASIC_SEARCH_URL.concat(keyword);
     }
 
-    public static String moreViewSearchUrlCreate(String keyword ,GyeonggiDoCyberLibraryMoreViewType viewType) {
-        return new StringBuilder().append(moreViewSearchURL).append(keyword)
-                .append(contentType.getText()).append(viewType.bookType().getUrlType())
-                .append(size.getText()).append(viewType.totalCount())
+    public static String moreViewSearchUrlCreate(String keyword ,int viewType) {
+        return new StringBuilder().append(MORE_VIEW_SEARCH_URL).append(keyword)
+                .append(CONTENT_TYPE_URL).append("")
+                .append(SIZE).append(viewType)
                 .toString();
     }
-//    &contentType=SUBS&asc=desc&size=263
 }

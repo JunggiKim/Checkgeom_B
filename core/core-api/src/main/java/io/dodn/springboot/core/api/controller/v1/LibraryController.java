@@ -1,7 +1,7 @@
 package io.dodn.springboot.core.api.controller.v1;
 
-import io.dodn.springboot.core.api.domain.response.LibraryServiceResponse;
 import io.dodn.springboot.core.api.service.LibraryService;
+import io.dodn.springboot.core.api.service.response.LibraryServiceResponse;
 import io.dodn.springboot.core.api.support.response.ApiResponse;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -53,7 +53,6 @@ public class LibraryController {
 
     private void validation(String searchKeyword) {
 
-        System.out.println("요청옴 = " + searchKeyword);
         if(searchKeyword.isBlank()) {
             throw new IllegalArgumentException(searchKeyword + " 빈 문자열입니다.");
         }

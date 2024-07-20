@@ -1,6 +1,6 @@
 package io.dodn.springboot.core.api.controller.v1.request;
 
-import io.dodn.springboot.core.api.domain.request.SearchServiceRequest;
+import io.dodn.springboot.core.api.service.request.SearchServiceRequest;
 
 public record SearchRequest(String keyword, String searchType, String listType, String sort) {
 

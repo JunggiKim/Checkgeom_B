@@ -1,6 +1,5 @@
 package io.dodn.springboot.core.api.domain;
 
-import io.dodn.springboot.core.api.domain.response.LibraryServiceResponse;
 import io.dodn.springboot.storage.db.core.response.LibraryRepositoryResponse;
 
 public class Book {

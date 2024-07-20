@@ -1,25 +1,14 @@
 package io.dodn.springboot.core.api.domain.gyeonggidocyberlibrary;
 
 public record GyeonggiDoCyberLibraryMoreViewType(
-        GyeonggiDoCyberLibraryBookType bookType ,
-        int totalCount
+        GyeonggiDoCyberLibraryBookType bookType
 ) {
 
 
-    public static GyeonggiDoCyberLibraryMoreViewType of (GyeonggiDoCyberLibraryBookType bookType , int totalCount) {
+    public static GyeonggiDoCyberLibraryMoreViewType of (GyeonggiDoCyberLibraryBookType bookType) {
             return new GyeonggiDoCyberLibraryMoreViewType(
-                    bookType,
-                    totalCount
+                    bookType
             );
-    }
-
-
-    public boolean isMoreView () {
-    return this.totalCount > 6 ;
-    }
-
-    public boolean isNotMoreView () {
-    return this.totalCount <= 6 ;
     }
 
 

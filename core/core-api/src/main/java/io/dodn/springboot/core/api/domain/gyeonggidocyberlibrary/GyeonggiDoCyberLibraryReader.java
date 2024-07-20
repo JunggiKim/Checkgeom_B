@@ -1,6 +1,6 @@
 package io.dodn.springboot.core.api.domain.gyeonggidocyberlibrary;
 
-import io.dodn.springboot.core.api.domain.response.LibraryServiceResponse;
+import io.dodn.springboot.core.api.service.response.LibraryServiceResponse;
 import io.dodn.springboot.storage.db.core.GyeonggiDoCyberLibraryRepository;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -24,18 +24,17 @@ public class GyeonggiDoCyberLibraryReader {
     }
 
 
-    public List<LibraryServiceResponse.BookDto> getSearchData(Document document) {
+    public List<LibraryServiceResponse.BookDto> getSearchData(Element htmlBody) {
         return gyeonggiDoCyberLibraryRepository
-                .getGyeonggiDoCyberLibraryResponse(document)
-                .stream()
+                .getGyeonggiDoCyberLibraryResponse(htmlBody).stream()
                 .map(LibraryServiceResponse.BookDto::of)
                 .toList();
 
     }
 
 
-    public List<GyeonggiDoCyberLibraryMoreViewType> isMoreViewList(Document document) {
-        Elements totalSearchBook = document.select("h5.searchH");
+    public List<GyeonggiDoCyberLibraryMoreViewType> isMoreViewList(Element htmlBody) {
+        Elements totalSearchBook = htmlBody.select("h5.searchH");
         List<Element> audiobookFilterList = totalSearchBook.stream().filter(element -> !element.text().contains("오디오북")).toList();
 
         return audiobookFilterList.stream()
@@ -45,6 +44,7 @@ public class GyeonggiDoCyberLibraryReader {
 
     private static GyeonggiDoCyberLibraryMoreViewType mapGyeonggiDoCyberLibraryMoreViewType(Element element) {
         String childText = element.child(0).text();
+
         String moreViewTotalCount = childText.replaceAll("[^0-9]", "");
 
         int index = childText.indexOf("(");
@@ -56,10 +56,7 @@ public class GyeonggiDoCyberLibraryReader {
 
         GyeonggiDoCyberLibraryBookType bookType = GyeonggiDoCyberLibraryBookType.of(findHtmlBookType);
 
-        return GyeonggiDoCyberLibraryMoreViewType.of(
-                bookType,
-                Integer.parseInt(moreViewTotalCount)
-        );
+        return GyeonggiDoCyberLibraryMoreViewType.of(bookType);
     }
 
 

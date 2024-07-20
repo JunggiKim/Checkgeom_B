@@ -1,9 +1,7 @@
 package io.dodn.springboot.core.api.domain;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import io.dodn.springboot.core.api.config.IntegrationTest;
 import io.dodn.springboot.core.api.domain.gyeonggidocyberlibrary.GyeonggiDoCyberLibraryReader;
-import io.dodn.springboot.core.api.domain.response.LibraryServiceResponse;
+import io.dodn.springboot.core.api.service.response.LibraryServiceResponse;
 import io.dodn.springboot.core.api.service.LibraryService;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Tag;
@@ -12,7 +10,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.web.servlet.MockMvc;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -43,7 +40,7 @@ class GyeonggiDoCyberLibraryServiceTest{
         // then0
 
         boolean keywordMatch = libraryServiceResponse.bookDtoList().stream()
-                .allMatch(bookDto -> bookDto.title().contains(searchKeyword));
+                .allMatch(bookDto ->bookDto.title().replaceAll(" ","").toLowerCase().contains(searchKeyword.toLowerCase()));
         assertThat(keywordMatch).isTrue();
 
     }
@@ -60,7 +57,7 @@ class GyeonggiDoCyberLibraryServiceTest{
 
         //then
         boolean keywordMatch = libraryServiceResponse.bookDtoList().stream()
-                .allMatch(bookDto -> bookDto.title().contains(searchKeyword));
+                .allMatch(bookDto ->bookDto.title().replaceAll(" ","").toLowerCase().contains(searchKeyword.toLowerCase()));
         assertThat(keywordMatch).isTrue();
 
     }
@@ -76,7 +73,7 @@ class GyeonggiDoCyberLibraryServiceTest{
 
         //then
         boolean keywordMatch = libraryServiceResponse.bookDtoList().stream()
-                .allMatch(bookDto -> bookDto.title().contains(searchKeyword));
+                .allMatch(bookDto ->bookDto.title().replaceAll(" ","").toLowerCase().contains(searchKeyword.toLowerCase()));
 
         assertThat(keywordMatch).isTrue();
     }

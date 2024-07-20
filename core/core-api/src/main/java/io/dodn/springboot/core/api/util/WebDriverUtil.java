@@ -19,7 +19,7 @@ public class WebDriverUtil {
     }
 
     public static WebDriverWait createWebDriverWait(WebDriver webDriver) {
-        return new WebDriverWait(webDriver, Duration.ofMillis(15));
+        return new WebDriverWait(webDriver, Duration.ofSeconds(1));
     }
 
     private static ChromeOptions createOptions() {
