@@ -1,6 +1,7 @@
 package io.dodn.springboot.core.api.domain;
 
 import io.dodn.springboot.core.api.domain.gyeonggidocyberlibrary.GyeonggiDoCyberLibraryReader;
+import io.dodn.springboot.core.api.service.response.AllLibraryServiceResponse;
 import io.dodn.springboot.core.api.service.response.LibraryServiceResponse;
 import io.dodn.springboot.core.api.service.LibraryService;
 import org.junit.jupiter.api.DisplayName;
@@ -76,6 +77,26 @@ class GyeonggiDoCyberLibraryServiceTest{
                 .allMatch(bookDto ->bookDto.title().replaceAll(" ","").toLowerCase().contains(searchKeyword.toLowerCase()));
 
         assertThat(keywordMatch).isTrue();
+    }
+
+
+    @DisplayName("소상 공인 전자 도서관에서 검색을 한다.")
+    @Test
+    void allLibrarySearch() throws Exception {
+        //given
+        String searchKeyword = "처음";
+
+        //when
+        AllLibraryServiceResponse libraryServiceResponse = libraryService.allLibrarySearch(searchKeyword);
+
+        //then
+
+        log.info("결과 값 = {}", libraryServiceResponse.toString());
+
+//        boolean keywordMatch = libraryServiceResponse.bookDtoList().stream()
+//                .allMatch(bookDto ->bookDto.title().replaceAll(" ","").toLowerCase().contains(searchKeyword.toLowerCase()));
+
+//        assertThat(keywordMatch).isTrue();
     }
 
 

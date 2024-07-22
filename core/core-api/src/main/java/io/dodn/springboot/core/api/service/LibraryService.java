@@ -1,10 +1,12 @@
 package io.dodn.springboot.core.api.service;
 
+import io.dodn.springboot.core.api.domain.LibraryType;
 import io.dodn.springboot.core.api.domain.MoreView;
 import io.dodn.springboot.core.api.domain.gyeonggiEducationalElectronicLibrary.gyeonggiEducationalElectronicLibrary;
 import io.dodn.springboot.core.api.domain.gyeonggidocyberlibrary.GyeonggiDoCyberLibrary;
 import io.dodn.springboot.core.api.domain.gyeonggidocyberlibrary.GyeonggiDoCyberLibraryMoreViewType;
 import io.dodn.springboot.core.api.domain.gyeonggidocyberlibrary.GyeonggiDoCyberLibraryReader;
+import io.dodn.springboot.core.api.service.response.AllLibraryServiceResponse;
 import io.dodn.springboot.core.api.service.response.LibraryServiceResponse;
 import io.dodn.springboot.core.api.domain.smallbusinesslibrary.SmallBusinessLibrary;
 import org.jsoup.Jsoup;
@@ -74,17 +76,12 @@ public class LibraryService {
 
         List<LibraryServiceResponse.BookDto> bookDtoList = gyeonggiDoCyberLibraryReader.getSearchData(htmlBody);
 
-        System.out.println(basicSearchUrl);
         String totalCount = htmlBody.select("h4.summaryHeading i").text();
 
 
-
-        System.out.println("가져 옴? = " + totalCount);
-
-        LibraryServiceResponse response = LibraryServiceResponse.of(bookDtoList, Integer.parseInt(totalCount), moreViewLink);
-
-        return response;
+        return LibraryServiceResponse.of(bookDtoList, Integer.parseInt(totalCount), moreViewLink , LibraryType.GYEONGGIDO_CYBER);
     }
+
 
 
     // 경기도사이버도서관 더 보기에 맞는 모든 북을 가져오는 로직
@@ -152,7 +149,7 @@ public class LibraryService {
         String totalCount = document.select("b#book_totalDataCount").text();
 
 
-        return LibraryServiceResponse.of(bookItemDtos, Integer.parseInt(totalCount), moreViewLinkList);
+        return LibraryServiceResponse.of(bookItemDtos, Integer.parseInt(totalCount), moreViewLinkList , LibraryType.GYEONGGI_EDUCATIONAL_ELECTRONIC);
     }
 
     private MoreView gyeonggiEducationalElectronicLibraryIsMoreView(Document document) {
@@ -226,7 +223,7 @@ public class LibraryService {
             moreViewUrlList.add(moreViewUrl);
         }
 
-        return LibraryServiceResponse.of(bookDtoList , Integer.parseInt(totalCount) ,moreViewUrlList);
+        return LibraryServiceResponse.of(bookDtoList , Integer.parseInt(totalCount) ,moreViewUrlList , LibraryType.SMALL_BUSINESS);
 
     }
 
@@ -259,13 +256,13 @@ public class LibraryService {
         throw new RuntimeException(element + " 의 정상적인 변환을 하지 못했습니다.");
     }
 
-    public Object allLibrarySearch(String searchKeyword) {
+    public AllLibraryServiceResponse allLibrarySearch(String searchKeyword) {
 
-        LibraryServiceResponse smallBusinessLibraryResponse = smallBusinessLibrarySearch(searchKeyword);
-        LibraryServiceResponse gyeonggiDoCyberLibraryResponse = gyeonggiDoCyberLibrarySearch(searchKeyword);
-        LibraryServiceResponse gyeonggiEducationalElectronicLibraryResponse = gyeonggiEducationalElectronicLibrarySearch(searchKeyword);
+        final List<LibraryServiceResponse> responseList = new ArrayList<>();
+        responseList.add(smallBusinessLibrarySearch(searchKeyword));
+        responseList.add(gyeonggiDoCyberLibrarySearch(searchKeyword));
+        responseList.add(gyeonggiEducationalElectronicLibrarySearch(searchKeyword));
 
-
-        return null;
+        return AllLibraryServiceResponse.of(responseList , LibraryType.ALL);
     }
 }

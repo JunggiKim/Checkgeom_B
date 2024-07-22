@@ -4,23 +4,24 @@ import io.dodn.springboot.storage.db.core.response.LibraryRepositoryResponse;
 
 public class Book {
 
-    private String bookImageLink;
-    private String title;
-    private String author;
-    private String publisher;
-    private String publicationDate;
-    private String loanAvailability;
+     private final String bookImageLink;
+     private final String title;
+     private final String author;
+     private final String publisher;
+     private final String publicationDate;
+     private final String loanAvailability;
 
-    private Book(String bookImageLink, String title, String author, String publisher, String publicationDate, String loanAvailability) {
+
+
+    private Book(String bookImageLink, String title, String author, String publisher, String publicationDate, String loanAvailability, String bookImageLink1, String title1, String author1, String publisher1, String publicationDate1, String loanAvailability1) {
+        this.bookImageLink = bookImageLink1;
+        this.title = title1;
+        this.author = author1;
+        this.publisher = publisher1;
+        this.publicationDate = publicationDate1;
+        this.loanAvailability = loanAvailability1;
     }
 
-    public static Book of(
-            LibraryRepositoryResponse repositoryResponse) {
-
-        return new Book(repositoryResponse.bookImageLink(),
-                repositoryResponse.title(), repositoryResponse.author(), repositoryResponse.publisher(),
-                repositoryResponse.publicationDate(), repositoryResponse.loanAvailability());
-    }
 
     public static Book of(
             String bookImageLink,
@@ -36,8 +37,8 @@ public class Book {
                 author,
                 publisher,
                 publicationDate,
-                loanAvailability
-        );
+                loanAvailability,
+                , , , , , );
     }
 
 

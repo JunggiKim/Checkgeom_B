@@ -1,29 +1,29 @@
 package io.dodn.springboot.core.api.service.response;
 
-import io.dodn.springboot.core.api.domain.Book;
 import io.dodn.springboot.core.api.domain.LibraryType;
 import io.dodn.springboot.storage.db.core.response.LibraryRepositoryResponse;
 
 import java.util.List;
+import java.util.Map;
 
-public record LibraryServiceResponse(List<LibraryServiceResponse.BookDto> bookDtoList, int totalCount , List<String> moreViewLink , LibraryType libraryType) {
+public record AllLibraryServiceResponse( List<LibraryServiceResponse> libraryServiceResponseList, LibraryType libraryType) {
 
-    public static LibraryServiceResponse of(List<LibraryServiceResponse.BookDto> bookList, int totalCount , List<String> moreViewLink , LibraryType libraryType) {
-        return new LibraryServiceResponse(bookList, totalCount , moreViewLink , libraryType);
+    public static AllLibraryServiceResponse of(List<LibraryServiceResponse> libraryServiceResponseList, LibraryType libraryType) {
+        return new AllLibraryServiceResponse(libraryServiceResponseList, libraryType);
     }
 
     public record BookDto(String bookImageLink, String title, String author, String publisher, String publicationDate,
                           String loanAvailability) {
 
-        public static LibraryServiceResponse.BookDto of(
+        public static AllLibraryServiceResponse.BookDto of(
                 LibraryRepositoryResponse repositoryResponse) {
 
-            return new LibraryServiceResponse.BookDto(repositoryResponse.bookImageLink(),
+            return new AllLibraryServiceResponse.BookDto(repositoryResponse.bookImageLink(),
                     repositoryResponse.title(), repositoryResponse.author(), repositoryResponse.publisher(),
                     repositoryResponse.publicationDate(), repositoryResponse.loanAvailability());
         }
 
-        public static LibraryServiceResponse.BookDto of(
+        public static AllLibraryServiceResponse.BookDto of(
                 String bookImageLink,
                 String title,
                 String author,
@@ -31,7 +31,7 @@ public record LibraryServiceResponse(List<LibraryServiceResponse.BookDto> bookDt
                 String publicationDate,
                 String loanAvailability
         ) {
-            return new LibraryServiceResponse.BookDto(
+            return new AllLibraryServiceResponse.BookDto(
                     bookImageLink,
                     title,
                     author,
