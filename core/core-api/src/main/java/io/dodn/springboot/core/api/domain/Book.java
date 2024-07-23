@@ -13,13 +13,13 @@ public class Book {
 
 
 
-    private Book(String bookImageLink, String title, String author, String publisher, String publicationDate, String loanAvailability, String bookImageLink1, String title1, String author1, String publisher1, String publicationDate1, String loanAvailability1) {
-        this.bookImageLink = bookImageLink1;
-        this.title = title1;
-        this.author = author1;
-        this.publisher = publisher1;
-        this.publicationDate = publicationDate1;
-        this.loanAvailability = loanAvailability1;
+    private Book(String bookImageLink, String title, String author, String publisher, String publicationDate, String loanAvailability) {
+        this.bookImageLink = bookImageLink;
+        this.title = title;
+        this.author = author;
+        this.publisher = publisher;
+        this.publicationDate = publicationDate;
+        this.loanAvailability = loanAvailability;
     }
 
 
@@ -37,8 +37,7 @@ public class Book {
                 author,
                 publisher,
                 publicationDate,
-                loanAvailability,
-                , , , , , );
+                loanAvailability);
     }
 
 

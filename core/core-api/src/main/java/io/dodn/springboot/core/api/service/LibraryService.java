@@ -66,20 +66,20 @@ public class LibraryService {
 
         List<GyeonggiDoCyberLibraryMoreViewType> moreViewList = gyeonggiDoCyberLibraryReader.isMoreViewList(htmlBody);
 
-
+        boolean isMoreView = moreViewList.stream().anyMatch(GyeonggiDoCyberLibraryMoreViewType::isMoreView);
         List<String> moreViewLink = new ArrayList<>();
-//        if (isMoreView) {
-//            moreViewLink = moreViewList.stream()
-//                    .map(viewType -> GyeonggiDoCyberLibrary.moreViewSearchUrlCreate(keyword, viewType))
-//                    .toList();
-//        }
+        if (isMoreView) {
+            moreViewLink = moreViewList.stream()
+                    .map(viewType -> GyeonggiDoCyberLibrary.moreViewSearchUrlCreate(keyword, viewType))
+                    .toList();
+        }
 
         List<LibraryServiceResponse.BookDto> bookDtoList = gyeonggiDoCyberLibraryReader.getSearchData(htmlBody);
 
-        String totalCount = htmlBody.select("h4.summaryHeading i").text();
+        String totalCount = htmlBody.select("h4.summaryHeading i").text().replaceAll(",","");
 
 
-        return LibraryServiceResponse.of(bookDtoList, Integer.parseInt(totalCount), moreViewLink , LibraryType.GYEONGGIDO_CYBER);
+        return LibraryServiceResponse.of(bookDtoList, Integer.parseInt(totalCount), moreViewLink , LibraryType.GYEONGGIDO_CYBER.getText());
     }
 
 
@@ -149,7 +149,7 @@ public class LibraryService {
         String totalCount = document.select("b#book_totalDataCount").text();
 
 
-        return LibraryServiceResponse.of(bookItemDtos, Integer.parseInt(totalCount), moreViewLinkList , LibraryType.GYEONGGI_EDUCATIONAL_ELECTRONIC);
+        return LibraryServiceResponse.of(bookItemDtos, Integer.parseInt(totalCount), moreViewLinkList , LibraryType.GYEONGGI_EDUCATIONAL_ELECTRONIC.getText());
     }
 
     private MoreView gyeonggiEducationalElectronicLibraryIsMoreView(Document document) {
@@ -219,11 +219,11 @@ public class LibraryService {
         List<String> moreViewUrlList = new ArrayList<>();
 
         if (moreView.moreView()) {
-            String moreViewUrl = SmallBusinessLibrary.moreViewUrlCreate(basicUrl, totalCount);
+            String moreViewUrl = SmallBusinessLibrary.moreViewUrlCreate(searchKeyword, totalCount);
             moreViewUrlList.add(moreViewUrl);
         }
 
-        return LibraryServiceResponse.of(bookDtoList , Integer.parseInt(totalCount) ,moreViewUrlList , LibraryType.SMALL_BUSINESS);
+        return LibraryServiceResponse.of(bookDtoList , Integer.parseInt(totalCount) ,moreViewUrlList , LibraryType.SMALL_BUSINESS.getText());
 
     }
 
@@ -263,6 +263,6 @@ public class LibraryService {
         responseList.add(gyeonggiDoCyberLibrarySearch(searchKeyword));
         responseList.add(gyeonggiEducationalElectronicLibrarySearch(searchKeyword));
 
-        return AllLibraryServiceResponse.of(responseList , LibraryType.ALL);
+        return AllLibraryServiceResponse.of(responseList , LibraryType.ALL.getText());
     }
 }

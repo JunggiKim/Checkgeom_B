@@ -56,7 +56,10 @@ public class GyeonggiDoCyberLibraryReader {
 
         GyeonggiDoCyberLibraryBookType bookType = GyeonggiDoCyberLibraryBookType.of(findHtmlBookType);
 
-        return GyeonggiDoCyberLibraryMoreViewType.of(bookType);
+        return GyeonggiDoCyberLibraryMoreViewType.of(
+                bookType,
+                Integer.parseInt(moreViewTotalCount)
+        );
     }
 
 

@@ -31,7 +31,7 @@ public class GyeonggiDoCyberLibraryRepository {
         List<String> bookPublishingInformationList = getBookPublishingInformationList(htmlElement);
 
         String text = htmlElement.select("div.stat").first().text();
-        System.out.println("테스트 = " + text);
+//        System.out.println("대출예약 현황 = " + text);    ex : 대출 : 1/5 예약 : 0/5
 
         String loanReservationStatus = getLoanReservationStatus(htmlElement);
 

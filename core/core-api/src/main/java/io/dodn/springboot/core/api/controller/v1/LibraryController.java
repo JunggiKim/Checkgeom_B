@@ -19,7 +19,7 @@ public class LibraryController {
     //그냥 응답값을 대출 가능여부를 보내기만 하자
 
 
-    @GetMapping("/api/v1/gyeonggiDoCyberLibrarySearch/{searchKeyword}")
+    @GetMapping("/api/v1/gyeonggiDoCyberLibrary/{searchKeyword}")
     public ApiResponse<?> gyeonggiDoCyberLibrarySearch(
                                  @PathVariable String searchKeyword) {
         validation(searchKeyword);
@@ -28,7 +28,7 @@ public class LibraryController {
     }
 
 
-    @GetMapping("/api/v1/gyeonggiEducationalElectronicLibrary/{searchKeyword}")
+    @GetMapping("/api/v1/gyeonggiEducationalElectronic/{searchKeyword}")
     public ApiResponse<?> gyeonggiEducationalElectronicLibrarySearch(
                                  @PathVariable String searchKeyword) {
         validation(searchKeyword);
@@ -36,7 +36,7 @@ public class LibraryController {
     }
 
 
-    @GetMapping("/api/v1/smallBusinessLibrary/{searchKeyword}")
+    @GetMapping("/api/v1/smallBusiness/{searchKeyword}")
     public ApiResponse<?> smallBusinessLibrarySearch(
                                  @PathVariable String searchKeyword) {
         validation(searchKeyword);
