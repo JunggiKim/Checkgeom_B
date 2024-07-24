@@ -3,7 +3,7 @@ package io.dodn.springboot.core.api.controller.v1;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.dodn.springboot.core.api.config.MockTest;
 import io.dodn.springboot.core.api.service.LibraryService;
-import io.dodn.springboot.core.api.domain.gyeonggidocyberlibrary.GyeonggiDoCyberLibraryReader;
+import io.dodn.springboot.core.api.service.GyeonggiDoCyberLibraryReader;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

@@ -6,10 +6,10 @@ import io.dodn.springboot.storage.db.core.response.LibraryRepositoryResponse;
 
 import java.util.List;
 
-public record LibraryServiceResponse(List<LibraryServiceResponse.BookDto> bookDtoList, int totalCount , List<String> moreViewLink , String libraryTypeText) {
+public record LibraryServiceResponse(List<LibraryServiceResponse.BookDto> bookDtoList, int bookSearchTotalCount , List<String> moreViewLink , String libraryTypeText) {
 
-    public static LibraryServiceResponse of(List<LibraryServiceResponse.BookDto> bookList, int totalCount , List<String> moreViewLink , String libraryTypeText) {
-        return new LibraryServiceResponse(bookList, totalCount , moreViewLink , libraryTypeText);
+    public static LibraryServiceResponse of(List<LibraryServiceResponse.BookDto> bookList, int bookSearchTotalCount , List<String> moreViewLink , String libraryTypeText) {
+        return new LibraryServiceResponse(bookList, bookSearchTotalCount , moreViewLink , libraryTypeText);
     }
 
     public record BookDto(String bookImageLink, String title, String author, String publisher, String publicationDate,

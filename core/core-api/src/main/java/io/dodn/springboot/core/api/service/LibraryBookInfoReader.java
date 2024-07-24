@@ -1,32 +1,41 @@
-package io.dodn.springboot.storage.db.core;
+package io.dodn.springboot.core.api.service;
 
+
+import io.dodn.springboot.core.api.service.response.LibraryServiceResponse;
 import io.dodn.springboot.storage.db.core.response.LibraryRepositoryResponse;
-import org.jsoup.Jsoup;
-import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
-import org.springframework.stereotype.Repository;
+import org.springframework.stereotype.Component;
 
 import java.util.Arrays;
 import java.util.List;
 
-@Repository
-public class GyeonggiDoCyberLibraryRepository {
+@Component
+public class LibraryBookInfoReader {
 
+
+
+
+    public List<LibraryServiceResponse.BookDto> gyeonggiDoCyberLibraryGetBookDataList(Element htmlBody) {
+
+
+        return getGyeonggiDoCyberLibraryResponse(htmlBody).stream()
+                .map(LibraryServiceResponse.BookDto::of)
+                .toList();
+    }
 
     public List<LibraryRepositoryResponse> getGyeonggiDoCyberLibraryResponse(Element htmlBody) {
 
         Elements searchBookItems = htmlBody.select("li.bookItem.row");
         return searchBookItems.stream()
-            .map(GyeonggiDoCyberLibraryRepository::getGyeonggiDoCyberLibraryRepositoryResponse)
-            .toList();
+                .map(this::getGyeonggiDoCyberLibraryRepositoryResponse)
+                .toList();
     }
 
-    private static LibraryRepositoryResponse getGyeonggiDoCyberLibraryRepositoryResponse(
+    private LibraryRepositoryResponse getGyeonggiDoCyberLibraryRepositoryResponse(
             Element htmlElement) {
         String bookImageLink = getBookImgeLink(htmlElement);
         String title = getBookTitle(htmlElement);
-
         // 인덱스 순서는 작성자 , 출판사 ,출판 날짜
         List<String> bookPublishingInformationList = getBookPublishingInformationList(htmlElement);
 
@@ -55,5 +64,13 @@ public class GyeonggiDoCyberLibraryRepository {
     private static List<String> getBookPublishingInformationList(Element htmlElement) {
         return Arrays.stream(htmlElement.select("p.desc").text().split("/")).toList();
     }
+
+    public int getBookSearchTotalCount (Element htmlBody) {
+        String StringTotalCount = htmlBody.select("h4.summaryHeading i").text().replaceAll(",", "");
+        return  Integer.parseInt(StringTotalCount);
+    }
+
+
+
 
 }

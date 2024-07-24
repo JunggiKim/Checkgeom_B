@@ -5,7 +5,6 @@ import io.dodn.springboot.core.api.domain.MoreView;
 import io.dodn.springboot.core.api.domain.gyeonggiEducationalElectronicLibrary.gyeonggiEducationalElectronicLibrary;
 import io.dodn.springboot.core.api.domain.gyeonggidocyberlibrary.GyeonggiDoCyberLibrary;
 import io.dodn.springboot.core.api.domain.gyeonggidocyberlibrary.GyeonggiDoCyberLibraryMoreViewType;
-import io.dodn.springboot.core.api.domain.gyeonggidocyberlibrary.GyeonggiDoCyberLibraryReader;
 import io.dodn.springboot.core.api.service.response.AllLibraryServiceResponse;
 import io.dodn.springboot.core.api.service.response.LibraryServiceResponse;
 import io.dodn.springboot.core.api.domain.smallbusinesslibrary.SmallBusinessLibrary;
@@ -15,7 +14,6 @@ import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import org.slf4j.Logger;
@@ -45,13 +43,18 @@ public class LibraryService {
     //      추가 더보기해야 할 것들은 이벤트를 발행을 하고
     //      검색을 한 후 레디스의 Map 타입으로 값을 넣고 그 안에서도 인덱스로 값을 찾으면서 무한스크롤 구현 한번 해 보자
 
-    private final Logger log = LoggerFactory.getLogger(getClass());
-
-    private final GyeonggiDoCyberLibraryReader gyeonggiDoCyberLibraryReader;
-
-    public LibraryService(GyeonggiDoCyberLibraryReader gyeonggiDoCyberLibraryReader) {
+    public LibraryService(GyeonggiDoCyberLibraryReader gyeonggiDoCyberLibraryReader, WebBrowserReader webBrowserReader, LibraryMoreViewLinkReader libraryMoreViewLinkReader, LibraryBookInfoReader libraryBookInfoReader) {
         this.gyeonggiDoCyberLibraryReader = gyeonggiDoCyberLibraryReader;
+        this.webBrowserReader = webBrowserReader;
+        this.libraryMoreViewLinkReader = libraryMoreViewLinkReader;
+        this.libraryBookInfoReader = libraryBookInfoReader;
     }
+
+    private final Logger log = LoggerFactory.getLogger(getClass());
+    private final GyeonggiDoCyberLibraryReader gyeonggiDoCyberLibraryReader;
+    private final WebBrowserReader webBrowserReader;
+    private final LibraryMoreViewLinkReader libraryMoreViewLinkReader;
+    private final LibraryBookInfoReader libraryBookInfoReader;
 
     // 소장형이든 구독형 최대 첫화면에서는 6개만 보여준다.
     // 그래서 숫자 값을 찾아서 만약 총값이 6개이상이라면 더보기칸을 눌러서 들어간다
@@ -59,29 +62,26 @@ public class LibraryService {
     // gyeonggiDoCyberLibrarySearch 의 경우 가져오는게 api로 변경이 있을 수 있기에 AOP로 따로 뺴두도록하자 웹드라이버의 기능을 빼 둘수가있나 한번 알아보자
     public LibraryServiceResponse gyeonggiDoCyberLibrarySearch(String keyword) {
 
+        Element htmlBody = webBrowserReader.gyeonggiDoCyberLibraryOpenBrowserAndGetHtmlBody(keyword);
+
+        List<String> moreViewLink = libraryMoreViewLinkReader.getMoreViewLinks(keyword, htmlBody);
+
+        List<LibraryServiceResponse.BookDto> bookDtoList = libraryBookInfoReader.gyeonggiDoCyberLibraryGetBookDataList(htmlBody);
+
+        int bookSearchTotalCount = libraryBookInfoReader.getBookSearchTotalCount(htmlBody);
+
+        return LibraryServiceResponse.of(bookDtoList, bookSearchTotalCount, moreViewLink , LibraryType.GYEONGGIDO_CYBER.getText());
+    }
+
+
+
+    private Element openWebBrowserAndGetHtmlBody(String keyword) {
         String basicSearchUrl = GyeonggiDoCyberLibrary.basicSearchUrlCreate(keyword);
         WebDriver webDriver = gyeonggiDoCyberLibraryOpenWebBrowser(basicSearchUrl);
         Element htmlBody = Jsoup.parse(webDriver.getPageSource()).body();
         webDriver.quit();
-
-        List<GyeonggiDoCyberLibraryMoreViewType> moreViewList = gyeonggiDoCyberLibraryReader.isMoreViewList(htmlBody);
-
-        boolean isMoreView = moreViewList.stream().anyMatch(GyeonggiDoCyberLibraryMoreViewType::isMoreView);
-        List<String> moreViewLink = new ArrayList<>();
-        if (isMoreView) {
-            moreViewLink = moreViewList.stream()
-                    .map(viewType -> GyeonggiDoCyberLibrary.moreViewSearchUrlCreate(keyword, viewType))
-                    .toList();
-        }
-
-        List<LibraryServiceResponse.BookDto> bookDtoList = gyeonggiDoCyberLibraryReader.getSearchData(htmlBody);
-
-        String totalCount = htmlBody.select("h4.summaryHeading i").text().replaceAll(",","");
-
-
-        return LibraryServiceResponse.of(bookDtoList, Integer.parseInt(totalCount), moreViewLink , LibraryType.GYEONGGIDO_CYBER.getText());
+        return htmlBody;
     }
-
 
 
     // 경기도사이버도서관 더 보기에 맞는 모든 북을 가져오는 로직
@@ -93,7 +93,7 @@ public class LibraryService {
             String moreViewTag = "searchResultList";
 //            WebDriver moreViewWebDriver = openWebBrowser(moreViewUrl, moreViewTag);
 //            Document document = Jsoup.parse(moreViewWebDriver.getPageSource());
-//            gyeonggiDoCyberLibraryReader.getSearchData(document);
+//            gyeonggiDoCyberLibraryReader.gyeonggiDoCyberLibraryGetBookInfo(document);
             // 더보기 링크 에 맞는 브라우저 오픈
         }
     }

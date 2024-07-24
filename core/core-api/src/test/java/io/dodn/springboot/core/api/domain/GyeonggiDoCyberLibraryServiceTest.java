@@ -1,6 +1,6 @@
 package io.dodn.springboot.core.api.domain;
 
-import io.dodn.springboot.core.api.domain.gyeonggidocyberlibrary.GyeonggiDoCyberLibraryReader;
+import io.dodn.springboot.core.api.service.GyeonggiDoCyberLibraryReader;
 import io.dodn.springboot.core.api.service.response.AllLibraryServiceResponse;
 import io.dodn.springboot.core.api.service.response.LibraryServiceResponse;
 import io.dodn.springboot.core.api.service.LibraryService;
