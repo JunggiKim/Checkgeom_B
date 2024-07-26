@@ -1,7 +1,6 @@
 package io.dodn.springboot.core.api.service;
 
 
-import io.dodn.springboot.core.api.service.response.LibraryServiceResponse;
 import io.dodn.springboot.storage.db.core.response.LibraryRepositoryResponse;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
@@ -15,14 +14,6 @@ public class LibraryBookInfoReader {
 
 
 
-
-    public List<LibraryServiceResponse.BookDto> gyeonggiDoCyberLibraryGetBookDataList(Element htmlBody) {
-
-
-        return getGyeonggiDoCyberLibraryResponse(htmlBody).stream()
-                .map(LibraryServiceResponse.BookDto::of)
-                .toList();
-    }
 
     public List<LibraryRepositoryResponse> getGyeonggiDoCyberLibraryResponse(Element htmlBody) {
 

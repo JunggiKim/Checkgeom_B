@@ -11,7 +11,7 @@ public class GyeonggiDoCyberLibrary {
 
 
     public static String basicSearchUrlCreate(String keyword) {
-        return BASIC_SEARCH_URL.concat(keyword);
+        return BASIC_SEARCH_URL + (keyword);
     }
 
     public static String moreViewSearchUrlCreate(String keyword ,GyeonggiDoCyberLibraryMoreViewType viewType) {

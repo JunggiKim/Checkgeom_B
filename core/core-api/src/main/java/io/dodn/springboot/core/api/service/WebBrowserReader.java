@@ -17,14 +17,6 @@ import static io.dodn.springboot.core.api.util.WebDriverUtil.createWebDriverWait
 @Component
 public class WebBrowserReader {
 
-    public Element gyeonggiDoCyberLibraryOpenBrowserAndGetHtmlBody(String keyword) {
-        String basicSearchUrl = GyeonggiDoCyberLibrary.basicSearchUrlCreate(keyword);
-        WebDriver webDriver = gyeonggiDoCyberLibraryOpenWebBrowser(basicSearchUrl);
-        Element htmlBody = Jsoup.parse(webDriver.getPageSource()).body();
-        webDriver.quit();
-        return htmlBody;
-    }
-
 
     private WebDriver gyeonggiDoCyberLibraryOpenWebBrowser(String basicSearchUrl) {
         WebDriver webDriver = createWebDriver();

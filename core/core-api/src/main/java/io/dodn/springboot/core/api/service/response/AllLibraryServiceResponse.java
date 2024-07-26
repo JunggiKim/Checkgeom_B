@@ -1,15 +1,13 @@
 package io.dodn.springboot.core.api.service.response;
 
-import io.dodn.springboot.core.api.domain.LibraryType;
 import io.dodn.springboot.storage.db.core.response.LibraryRepositoryResponse;
 
 import java.util.List;
-import java.util.Map;
 
-public record AllLibraryServiceResponse( List<LibraryServiceResponse> libraryServiceResponseList, String libraryTypeText) {
+public record AllLibraryServiceResponse(List<LibrarySearchServiceResponse> librarySearchServiceResponseList, String libraryTypeText) {
 
-    public static AllLibraryServiceResponse of(List<LibraryServiceResponse> libraryServiceResponseList, String libraryTypeText) {
-        return new AllLibraryServiceResponse(libraryServiceResponseList, libraryTypeText);
+    public static AllLibraryServiceResponse of(List<LibrarySearchServiceResponse> librarySearchServiceResponseList, String libraryTypeText) {
+        return new AllLibraryServiceResponse(librarySearchServiceResponseList, libraryTypeText);
     }
 
     public record BookDto(String bookImageLink, String title, String author, String publisher, String publicationDate,

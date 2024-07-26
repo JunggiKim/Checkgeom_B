@@ -1,7 +1,7 @@
 package io.dodn.springboot.core.api.controller.v1;
 
 import io.dodn.springboot.core.api.service.LibraryService;
-import io.dodn.springboot.core.api.service.response.LibraryServiceResponse;
+import io.dodn.springboot.core.api.service.response.LibrarySearchServiceResponse;
 import io.dodn.springboot.core.api.support.response.ApiResponse;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -23,8 +23,8 @@ public class LibraryController {
     public ApiResponse<?> gyeonggiDoCyberLibrarySearch(
                                  @PathVariable String searchKeyword) {
         validation(searchKeyword);
-        LibraryServiceResponse libraryServiceResponse = libraryService.gyeonggiDoCyberLibrarySearch(searchKeyword);
-        return ApiResponse.success(libraryServiceResponse);
+        LibrarySearchServiceResponse librarySearchServiceResponse = libraryService.gyeonggiDoCyberLibrarySearch(searchKeyword);
+        return ApiResponse.success(librarySearchServiceResponse);
     }
 
 
