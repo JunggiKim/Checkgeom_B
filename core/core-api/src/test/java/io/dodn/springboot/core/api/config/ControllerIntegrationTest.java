@@ -18,9 +18,14 @@ import java.nio.charset.StandardCharsets;
 //@MockBean(JpaMetamodelMappingContext.class)
 @Disabled
 @SpringBootTest
+@AutoConfigureMockMvc
+@ExtendWith(SpringExtension.class)
+@WebMvcTest
 @ActiveProfiles("test")    //테스트의 프로필을 이넘으로관리 가능
-public class IntegrationTest {
+public class ControllerIntegrationTest {
 
+    @Autowired
+    protected MockMvc mockMvc;
     @Autowired
     protected ObjectMapper objectMapper;
 

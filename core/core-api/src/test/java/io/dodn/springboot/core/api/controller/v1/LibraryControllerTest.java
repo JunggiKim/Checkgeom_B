@@ -41,7 +41,7 @@ class LibraryControllerTest extends MockTest {
         String keyword = UUID.randomUUID().toString();
 
 //        given(libraryService.gyeonggiDoCyberLibrarySearch(anyString()))
-//                .willReturn(LibraryServiceResponse.of());
+//                .willReturn(LibrarySearchServiceResponse.of());
 
         //given
 //        mockMvc.perform(get("/api/v1/gyeonggiDoCyberLibrarySearch/"+keyword)
