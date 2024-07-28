@@ -21,8 +21,9 @@ public class LibraryController {
 
     @GetMapping("/api/v1/gyeonggiDoCyberLibrary/{searchKeyword}")
     public ApiResponse<?> gyeonggiDoCyberLibrarySearch(
-                                 @PathVariable String searchKeyword) {
+            @PathVariable String searchKeyword) {
         validation(searchKeyword);
+
         LibrarySearchServiceResponse librarySearchServiceResponse = libraryService.gyeonggiDoCyberLibrarySearch(searchKeyword);
         return ApiResponse.success(librarySearchServiceResponse);
     }
@@ -30,7 +31,7 @@ public class LibraryController {
 
     @GetMapping("/api/v1/gyeonggiEducationalElectronic/{searchKeyword}")
     public ApiResponse<?> gyeonggiEducationalElectronicLibrarySearch(
-                                 @PathVariable String searchKeyword) {
+            @PathVariable String searchKeyword) {
         validation(searchKeyword);
         return ApiResponse.success(libraryService.gyeonggiEducationalElectronicLibrarySearch(searchKeyword));
     }
@@ -38,22 +39,21 @@ public class LibraryController {
 
     @GetMapping("/api/v1/smallBusiness/{searchKeyword}")
     public ApiResponse<?> smallBusinessLibrarySearch(
-                                 @PathVariable String searchKeyword) {
+            @PathVariable String searchKeyword) {
         validation(searchKeyword);
         return ApiResponse.success(libraryService.smallBusinessLibrarySearch(searchKeyword));
     }
 
     @GetMapping("/api/v1/allLibrary/{searchKeyword}")
-    public ApiResponse<?> allLibrarySearch(
-                                 @PathVariable String searchKeyword) {
-        validation(searchKeyword);
+    public ApiResponse<?> allLibrarySearch(@PathVariable String searchKeyword) {
 
+        validation(searchKeyword);
         return ApiResponse.success(libraryService.allLibrarySearch(searchKeyword));
     }
 
     private void validation(String searchKeyword) {
 
-        if(searchKeyword.isBlank()) {
+        if (searchKeyword.isBlank()) {
             throw new IllegalArgumentException(searchKeyword + " 빈 문자열입니다.");
         }
     }

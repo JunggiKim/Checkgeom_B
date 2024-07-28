@@ -21,7 +21,6 @@ import java.nio.charset.StandardCharsets;
 @AutoConfigureMockMvc
 @ExtendWith(SpringExtension.class)
 @WebMvcTest
-@ActiveProfiles("test")    //테스트의 프로필을 이넘으로관리 가능
 public class ControllerIntegrationTest {
 
     @Autowired

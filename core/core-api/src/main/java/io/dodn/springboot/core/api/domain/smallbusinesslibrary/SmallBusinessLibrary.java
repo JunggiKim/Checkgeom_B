@@ -16,7 +16,7 @@ public class SmallBusinessLibrary {
 
 
 
-    public static String moreViewUrlCreate(String searchKeyword , String totalSearchCount) {
+    public static String moreViewUrlCreate(String searchKeyword , int totalSearchCount) {
         return new StringBuilder(MORE_VIEW_URL)
                 .append(SEARCH_TEXT).append(searchKeyword)
                 .append(ROW_COUNT).append(totalSearchCount)
