@@ -27,12 +27,10 @@ import static io.dodn.springboot.core.api.util.WebDriverUtil.createWebDriverWait
 @Component
 public class GyeonggiDoCyberLibraryReader {
 
-    private final WebBrowserReader webBrowserReader;
     private final LibraryBookInfoReader libraryBookInfoReader;
 
 
-    public GyeonggiDoCyberLibraryReader(WebBrowserReader webBrowserReader, LibraryBookInfoReader libraryBookInfoReader) {
-        this.webBrowserReader = webBrowserReader;
+    public GyeonggiDoCyberLibraryReader(LibraryBookInfoReader libraryBookInfoReader) {
         this.libraryBookInfoReader = libraryBookInfoReader;
     }
 
@@ -128,7 +126,7 @@ public class GyeonggiDoCyberLibraryReader {
     }
 
 
-    public Element gyeonggiDoCyberLibraryGetHtmlBody(String keyword) {
+    public Element getGyeonggiDoCyberLibraryHtmlBody(String keyword) {
         String basicSearchUrl = GyeonggiDoCyberLibrary.basicSearchUrlCreate(keyword);
         WebDriver webDriver = openWebBrowser(basicSearchUrl);
         Element htmlBody = Jsoup.parse(webDriver.getPageSource()).body();

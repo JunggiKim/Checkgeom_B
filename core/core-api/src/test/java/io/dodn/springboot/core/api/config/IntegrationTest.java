@@ -7,6 +7,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.data.jpa.mapping.JpaMetamodelMappingContext;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
@@ -18,7 +20,6 @@ import java.nio.charset.StandardCharsets;
 //@MockBean(JpaMetamodelMappingContext.class)
 @Disabled
 @SpringBootTest
-@ActiveProfiles("test")    //테스트의 프로필을 이넘으로관리 가능
 public class IntegrationTest {
 
     @Autowired

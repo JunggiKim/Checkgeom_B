@@ -3,7 +3,6 @@ package io.dodn.springboot.core.api.service;
 import io.dodn.springboot.core.api.domain.LibraryType;
 import io.dodn.springboot.core.api.domain.MoreView;
 import io.dodn.springboot.core.api.domain.gyeonggiEducationalElectronicLibrary.gyeonggiEducationalElectronicLibrary;
-import io.dodn.springboot.core.api.domain.gyeonggidocyberlibrary.GyeonggiDoCyberLibrary;
 import io.dodn.springboot.core.api.domain.gyeonggidocyberlibrary.GyeonggiDoCyberLibraryMoreViewType;
 import io.dodn.springboot.core.api.service.response.AllLibraryServiceResponse;
 import io.dodn.springboot.core.api.service.response.LibrarySearchServiceResponse;
@@ -41,12 +40,16 @@ public class LibraryService {
     //      추가 더보기해야 할 것들은 이벤트를 발행을 하고
     //      검색을 한 후 레디스의 Map 타입으로 값을 넣고 그 안에서도 인덱스로 값을 찾으면서 무한스크롤 구현 한번 해 보자
 
-    public LibraryService(GyeonggiDoCyberLibraryReader gyeonggiDoCyberLibraryReader, WebBrowserReader webBrowserReader, LibraryBookInfoReader libraryBookInfoReader) {
+    public LibraryService(GyeonggiDoCyberLibraryReader gyeonggiDoCyberLibraryReader, GyeonggiEducationalElectronicLibraryReader gyeonggiEducationalElectronicLibraryReader) {
         this.gyeonggiDoCyberLibraryReader = gyeonggiDoCyberLibraryReader;
+        this.gyeonggiEducationalElectronicLibraryReader = gyeonggiEducationalElectronicLibraryReader;
     }
 
     private final Logger log = LoggerFactory.getLogger(getClass());
     private final GyeonggiDoCyberLibraryReader gyeonggiDoCyberLibraryReader;
+    private final GyeonggiEducationalElectronicLibraryReader gyeonggiEducationalElectronicLibraryReader;
+
+
 
     // 소장형이든 구독형 최대 첫화면에서는 6개만 보여준다.
     // 그래서 숫자 값을 찾아서 만약 총값이 6개이상이라면 더보기칸을 눌러서 들어간다
@@ -54,7 +57,7 @@ public class LibraryService {
     // gyeonggiDoCyberLibrarySearch 의 경우 가져오는게 api로 변경이 있을 수 있기에 AOP로 따로 뺴두도록하자 웹드라이버의 기능을 빼 둘수가있나 한번 알아보자
     public LibrarySearchServiceResponse gyeonggiDoCyberLibrarySearch(String keyword) {
 
-        Element htmlBody = gyeonggiDoCyberLibraryReader.gyeonggiDoCyberLibraryGetHtmlBody(keyword);
+        Element htmlBody = gyeonggiDoCyberLibraryReader.getGyeonggiDoCyberLibraryHtmlBody(keyword);
 
         List<String> moreViewLink = gyeonggiDoCyberLibraryReader.getMoreViewLinks(keyword, htmlBody);
 
@@ -89,98 +92,24 @@ public class LibraryService {
 
     }
 
-    private WebDriver openWebBrowser(String basicSearchUrl, String stayClassName) {
-        WebDriver webDriver = createWebDriver();
-        WebDriverWait webDriverWait = createWebDriverWait(webDriver);
-
-        webDriver.get(basicSearchUrl); // 브라우저에서 url로 이동한다.
-        webDriverWait.until(ExpectedConditions.presenceOfElementLocated(By.className(stayClassName)));
-
-        return webDriver;
-    }
-
-    private WebDriver gyeonggiDoCyberLibraryOpenWebBrowser(String basicSearchUrl) {
-        WebDriver webDriver = createWebDriver();
-        WebDriverWait webDriverWait = createWebDriverWait(webDriver);
-
-        webDriver.get(basicSearchUrl); // 브라우저에서 url로 이동한다.
-
-        webDriverWait.until(ExpectedConditions.textMatches(By.cssSelector(GyeonggiDoCyberLibrary.STAY_CSS), Pattern.compile("\\d+")));
-
-        return webDriver;
-    }
 
     // 기본 검색한 책 목록과 책 총 결과 수 와 검색결과 모두 볼수있는 더보기링크 까지 보내주자
     public LibrarySearchServiceResponse gyeonggiEducationalElectronicLibrarySearch(String keyword) {
+
         String searchUrl = gyeonggiEducationalElectronicLibrary.basicSearchUrlCreate(keyword);
-        WebDriver webDriver = openWebBrowser(searchUrl,gyeonggiEducationalElectronicLibrary.stayClassName);
-        Document document = Jsoup.parse(webDriver.getPageSource());
-        webDriver.quit();
 
+        Document document = gyeonggiEducationalElectronicLibraryReader.getGyeonggiEducationalElectronicLibraryHtml(searchUrl);
 
-        List<String> moreViewLinkList = new ArrayList<>();
-        MoreView moreView = gyeonggiEducationalElectronicLibraryIsMoreView(document);
+        List<String> moreViewLinkList = gyeonggiEducationalElectronicLibraryReader.getMoreViewLinks(document, searchUrl);
 
-        if (moreView.moreView()) {
-            String moreViewUrl = gyeonggiEducationalElectronicLibrary.moreViewSearchUrlCreate(searchUrl, moreView.totalCount());
-            moreViewLinkList.add(moreViewUrl);
-        }
+        List<LibrarySearchServiceResponse.BookDto> bookItemDtos = gyeonggiEducationalElectronicLibraryReader.getBookItemDtos(document);
 
-        List<LibrarySearchServiceResponse.BookDto> bookItemDtos = getBookItemDtos(document);
-
-
-        String totalCount = document.select("b#book_totalDataCount").text();
-
+        String totalCount =  gyeonggiEducationalElectronicLibraryReader.getBookSearchTotalCount(document);
 
         return LibrarySearchServiceResponse.of(bookItemDtos, Integer.parseInt(totalCount), moreViewLinkList , LibraryType.GYEONGGI_EDUCATIONAL_ELECTRONIC.getText());
     }
 
-    private MoreView gyeonggiEducationalElectronicLibraryIsMoreView(Document document) {
-        String totalCount = document.select("b#book_totalDataCount").text();
-        return MoreView.create(Integer.parseInt(totalCount));
-    }
 
-    private List<LibrarySearchServiceResponse.BookDto> getBookItemDtos(Document document) {
-
-        Elements select = document.select("div.row");
-        //  제목 , 저자 , 출판사  , 출판날짜  , 대출가능여부  , 책 이미지링크 ,
-//    String bookImageLink, String title, String author, String publisher, String publicationDate,
-
-        List<LibrarySearchServiceResponse.BookDto> bookDtoList = new ArrayList<>();
-
-
-        for (Element element : select) {
-            String bookTitle = element.select("a.name.goDetail").text();
-            String bookImageLink = element.select("a.goDetail img").attr("src");
-
-            String[] bookDetailInfo = element.select("div p").text().split("│");
-            List<String> bookDetailInfoList = Arrays.stream(bookDetailInfo)
-                    .map(LibraryService::extractBookDetails).toList();
-
-            // 저자, 출판사, 출판일 ,도서관 대출가능여부 (대출 ,예약 두개있을수도 있음) ,자료유형 전자책
-            LibrarySearchServiceResponse.BookDto bookDto = LibrarySearchServiceResponse.BookDto.of(
-                    bookImageLink,
-                    bookTitle,
-                    bookDetailInfoList.get(0),
-                    bookDetailInfoList.get(1),
-                    bookDetailInfoList.get(2),
-                    bookDetailInfoList.get(3)
-            );
-
-            bookDtoList.add(bookDto);
-            //            인덱스 순서
-        }
-
-        return bookDtoList;
-    }
-
-    private static String extractBookDetails(String bookInfo) {
-        int index = bookInfo.indexOf(":");
-        String subStringed = bookInfo.substring(index + 1);
-        int index1 = subStringed.indexOf(":");  // 경기교육통합도서관대출 가능 여부 :  <- 문자 또 제거
-        String bookDetailInfo2 = subStringed.substring(index1 + 1);
-        return bookDetailInfo2;
-    }
 
     public LibrarySearchServiceResponse smallBusinessLibrarySearch(String searchKeyword) {
 
@@ -208,6 +137,17 @@ public class LibraryService {
 
         return LibrarySearchServiceResponse.of(bookDtoList , Integer.parseInt(totalCount) ,moreViewUrlList , LibraryType.SMALL_BUSINESS.getText());
 
+    }
+
+
+    private WebDriver openWebBrowser(String basicSearchUrl, String stayClassName) {
+        WebDriver webDriver = createWebDriver();
+        WebDriverWait webDriverWait = createWebDriverWait(webDriver);
+
+        webDriver.get(basicSearchUrl); // 브라우저에서 url로 이동한다.
+        webDriverWait.until(ExpectedConditions.presenceOfElementLocated(By.className(stayClassName)));
+
+        return webDriver;
     }
 
     private List<LibrarySearchServiceResponse.BookDto> getSmallBusinessLibraryBookItemDtos(Element htmlBody) {
