@@ -46,9 +46,19 @@ public class LibraryController {
 
     @GetMapping("/api/v1/allLibrary/{searchKeyword}")
     public ApiResponse<?> allLibrarySearch(@PathVariable String searchKeyword) {
-
         validation(searchKeyword);
         return ApiResponse.success(libraryService.allLibrarySearch(searchKeyword));
+    }
+
+    @GetMapping("/api/v1/allLibraryAsyncSearch/{searchKeyword}")
+    public ApiResponse<?> allLibraryAsyncSearch(@PathVariable String searchKeyword) {
+        validation(searchKeyword);
+        return ApiResponse.success(libraryService.allLibraryAsyncSearch(searchKeyword));
+    }
+    @GetMapping("/api/v1/allLibraryAsyncSearch2/{searchKeyword}")
+    public ApiResponse<?> allLibraryAsyncSearch2(@PathVariable String searchKeyword) {
+        validation(searchKeyword);
+        return ApiResponse.success(libraryService.allLibraryAsyncSearch2(searchKeyword));
     }
 
     private void validation(String searchKeyword) {

@@ -18,6 +18,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
+import java.util.stream.Stream;
 
 @Service
 @Transactional
@@ -48,35 +49,21 @@ public class LibraryService {
     // gyeonggiDoCyberLibrarySearch 의 경우 가져오는게 api로 변경이 있을 수 있기에 AOP로 따로 뺴두도록하자 웹드라이버의 기능을 빼 둘수가있나 한번 알아보자
     public LibrarySearchServiceResponse gyeonggiDoCyberLibrarySearch(String keyword) {
 
-       final Element htmlBody = gyeonggiDoCyberLibraryReader.getGyeonggiDoCyberLibraryHtmlBody(keyword);
+        final Element htmlBody = gyeonggiDoCyberLibraryReader.getGyeonggiDoCyberLibraryHtmlBody(keyword);
 
-       final List<String> moreViewLink = gyeonggiDoCyberLibraryReader.getMoreViewLinks(keyword, htmlBody);
+        final List<String> moreViewLink = gyeonggiDoCyberLibraryReader.getMoreViewLinks(keyword, htmlBody);
 
-       final List<LibrarySearchServiceResponse.BookDto> bookDtoList = gyeonggiDoCyberLibraryReader.searchBookList(htmlBody);
+        final List<LibrarySearchServiceResponse.BookDto> bookDtoList = gyeonggiDoCyberLibraryReader.searchBookList(htmlBody);
 
-       final int bookSearchTotalCount = gyeonggiDoCyberLibraryReader.getBookSearchTotalCount(htmlBody);
+        final int bookSearchTotalCount = gyeonggiDoCyberLibraryReader.getBookSearchTotalCount(htmlBody);
 
         return LibrarySearchServiceResponse.of(bookDtoList, bookSearchTotalCount, moreViewLink, LibraryType.GYEONGGIDO_CYBER.getText());
     }
 
     @Async
     public CompletableFuture<LibrarySearchServiceResponse> asyncGyeonggiDoCyberLibrarySearch(String keyword) {
+        return CompletableFuture.completedFuture(this.gyeonggiEducationalElectronicLibrarySearch(keyword));
 
-        CompletableFuture.completedFuture("my result");
-       final Element htmlBody = gyeonggiDoCyberLibraryReader.getGyeonggiDoCyberLibraryHtmlBody(keyword);
-
-       final List<String> moreViewLink = gyeonggiDoCyberLibraryReader.getMoreViewLinks(keyword, htmlBody);
-
-       final List<LibrarySearchServiceResponse.BookDto> bookDtoList = gyeonggiDoCyberLibraryReader.searchBookList(htmlBody);
-
-       final int bookSearchTotalCount = gyeonggiDoCyberLibraryReader.getBookSearchTotalCount(htmlBody);
-
-
-        LibrarySearchServiceResponse response = LibrarySearchServiceResponse.of(bookDtoList, bookSearchTotalCount, moreViewLink, LibraryType.GYEONGGIDO_CYBER.getText());
-
-
-
-        return CompletableFuture.completedFuture(response);
     }
 
 
@@ -106,33 +93,22 @@ public class LibraryService {
     // 기본 검색한 책 목록과 책 총 결과 수 와 검색결과 모두 볼수있는 더보기링크 까지 보내주자
     public LibrarySearchServiceResponse gyeonggiEducationalElectronicLibrarySearch(String keyword) {
 
-       final String searchUrl = gyeonggiEducationalElectronicLibrary.basicSearchUrlCreate(keyword);
+        final String searchUrl = gyeonggiEducationalElectronicLibrary.basicSearchUrlCreate(keyword);
 
-       final Document document = gyeonggiEducationalElectronicLibraryReader.getGyeonggiEducationalElectronicLibraryHtml(searchUrl);
+        final Document document = gyeonggiEducationalElectronicLibraryReader.getGyeonggiEducationalElectronicLibraryHtml(searchUrl);
 
-       final List<String> moreViewLinkList = gyeonggiEducationalElectronicLibraryReader.getMoreViewLinks(document, searchUrl);
+        final List<String> moreViewLinkList = gyeonggiEducationalElectronicLibraryReader.getMoreViewLinks(document, searchUrl);
 
-       final List<LibrarySearchServiceResponse.BookDto> bookItemDtos = gyeonggiEducationalElectronicLibraryReader.getBookItemDtos(document);
+        final List<LibrarySearchServiceResponse.BookDto> bookItemDtos = gyeonggiEducationalElectronicLibraryReader.getBookItemDtos(document);
 
-       final String totalCount = gyeonggiEducationalElectronicLibraryReader.getBookSearchTotalCount(document);
+        final String totalCount = gyeonggiEducationalElectronicLibraryReader.getBookSearchTotalCount(document);
 
         return LibrarySearchServiceResponse.of(bookItemDtos, Integer.parseInt(totalCount), moreViewLinkList, LibraryType.GYEONGGI_EDUCATIONAL_ELECTRONIC.getText());
     }
 
     @Async
-    public LibrarySearchServiceResponse asyncGyeonggiEducationalElectronicLibrarySearch(String keyword) {
-
-       final String searchUrl = gyeonggiEducationalElectronicLibrary.basicSearchUrlCreate(keyword);
-
-       final Document document = gyeonggiEducationalElectronicLibraryReader.getGyeonggiEducationalElectronicLibraryHtml(searchUrl);
-
-       final List<String> moreViewLinkList = gyeonggiEducationalElectronicLibraryReader.getMoreViewLinks(document, searchUrl);
-
-       final List<LibrarySearchServiceResponse.BookDto> bookItemDtos = gyeonggiEducationalElectronicLibraryReader.getBookItemDtos(document);
-
-       final String totalCount = gyeonggiEducationalElectronicLibraryReader.getBookSearchTotalCount(document);
-
-        return LibrarySearchServiceResponse.of(bookItemDtos, Integer.parseInt(totalCount), moreViewLinkList, LibraryType.GYEONGGI_EDUCATIONAL_ELECTRONIC.getText());
+    public CompletableFuture<LibrarySearchServiceResponse> asyncGyeonggiEducationalElectronicLibrarySearch(String keyword) {
+        return CompletableFuture.completedFuture(this.gyeonggiEducationalElectronicLibrarySearch(keyword));
     }
 
 
@@ -155,24 +131,10 @@ public class LibraryService {
         return LibrarySearchServiceResponse.of(bookDtoList, totalCount, moreViewUrlList, LibraryType.SMALL_BUSINESS.getText());
 
     }
-    public LibrarySearchServiceResponse asyncSmallBusinessLibrarySearch(String searchKeyword) {
 
-        // TODO 기본 URL 불러오기까지는 가능하게 해놨다.
-        //   이제 값을 가져오기만 하면 될듯 하다.
-
-        final String basicUrl = SmallBusinessLibrary.basicUrlCreate(searchKeyword);
-
-        final Element htmlBody = smallBusinessLibraryReader.getHtmlBody(basicUrl);
-
-        final List<LibrarySearchServiceResponse.BookDto> bookDtoList = smallBusinessLibraryReader.getBooks(htmlBody);
-
-        final int totalCount = smallBusinessLibraryReader.getTotalCount(htmlBody);
-
-        final List<String> moreViewUrlList = smallBusinessLibraryReader.getMoreViewLinks(searchKeyword, totalCount);
-
-
-        return LibrarySearchServiceResponse.of(bookDtoList, totalCount, moreViewUrlList, LibraryType.SMALL_BUSINESS.getText());
-
+    @Async
+    public CompletableFuture<LibrarySearchServiceResponse> asyncSmallBusinessLibrarySearch(String searchKeyword) {
+        return CompletableFuture.completedFuture(this.smallBusinessLibrarySearch(searchKeyword));
     }
 
 
@@ -186,13 +148,47 @@ public class LibraryService {
         return AllLibraryServiceResponse.of(responseList, LibraryType.ALL.getText());
     }
 
-    public AllLibraryServiceResponse allLibraryAsyncSearch(String searchKeyword) {
-//        CompletableFuture.completedFuture()
-        final List<LibrarySearchServiceResponse> responseList = new ArrayList<>();
-//        responseList.add(asyncGyeonggiDoCyberLibrarySearch(searchKeyword));
-        responseList.add(asyncGyeonggiEducationalElectronicLibrarySearch(searchKeyword));
-        responseList.add(asyncSmallBusinessLibrarySearch(searchKeyword));
 
-        return AllLibraryServiceResponse.of(responseList, LibraryType.ALL.getText());
+    public AllLibraryServiceResponse allLibraryAsyncSearch(String searchKeyword) {
+
+        CompletableFuture<LibrarySearchServiceResponse> gyeonggiDoCyberResponse = CompletableFuture.supplyAsync(() -> gyeonggiDoCyberLibrarySearch(searchKeyword));
+        CompletableFuture<LibrarySearchServiceResponse> gyeonggiEducationalElectronicResponse = CompletableFuture.supplyAsync(() -> gyeonggiEducationalElectronicLibrarySearch(searchKeyword));
+        CompletableFuture<LibrarySearchServiceResponse> smallBusinessResponse = CompletableFuture.supplyAsync(() -> smallBusinessLibrarySearch(searchKeyword));
+
+        List<LibrarySearchServiceResponse> resultList = CompletableFuture.allOf(
+                        gyeonggiDoCyberResponse,
+                        gyeonggiEducationalElectronicResponse,
+                        smallBusinessResponse
+                )
+                .thenApply(voidResult -> Stream.of(
+                                gyeonggiDoCyberResponse,
+                                gyeonggiEducationalElectronicResponse,
+                                smallBusinessResponse)
+                        .map(CompletableFuture::join)
+                        .toList()
+                ).join();
+
+        return AllLibraryServiceResponse.of(resultList, LibraryType.ALL.getText());
     }
+
+
+    public AllLibraryServiceResponse allLibraryAsyncSearch2(String searchKeyword) {
+
+
+        CompletableFuture<LibrarySearchServiceResponse> response1 = this.asyncGyeonggiDoCyberLibrarySearch(searchKeyword);
+        CompletableFuture<LibrarySearchServiceResponse> response2 = this.asyncGyeonggiEducationalElectronicLibrarySearch(searchKeyword);
+        CompletableFuture<LibrarySearchServiceResponse> response3 = this.asyncSmallBusinessLibrarySearch(searchKeyword);
+
+
+
+        return CompletableFuture.allOf(response1, response2, response3)
+                .thenApply(voidResult -> {
+                            List<LibrarySearchServiceResponse> responseList = Stream.of(response1, response2, response3)
+                                    .map(CompletableFuture::join)
+                                    .toList();
+                            return AllLibraryServiceResponse.of(responseList, LibraryType.ALL.getText());
+                        }
+                ).join();
+    }
+
 }
