@@ -74,7 +74,8 @@ public class SmallBusinessLibraryReader {
     }
 
     public int getTotalCount (Element htmlBody) {
-        String stringTotalCount = htmlBody.select("div.book_resultTxt p").toString().replaceAll("[^0-9]", "");
+        String totalCount = htmlBody.select("div.book_resultTxt p").toString().replaceAll("[^0-9]", "");
+        String stringTotalCount = totalCount.isBlank() ? "0" : totalCount;
         return Integer.parseInt(stringTotalCount);
 }
 

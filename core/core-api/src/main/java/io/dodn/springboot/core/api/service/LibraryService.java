@@ -189,7 +189,7 @@ public class LibraryService {
     public AllLibraryServiceResponse allLibraryAsyncSearch(String searchKeyword) {
 //        CompletableFuture.completedFuture()
         final List<LibrarySearchServiceResponse> responseList = new ArrayList<>();
-        responseList.add(asyncGyeonggiDoCyberLibrarySearch(searchKeyword));
+//        responseList.add(asyncGyeonggiDoCyberLibrarySearch(searchKeyword));
         responseList.add(asyncGyeonggiEducationalElectronicLibrarySearch(searchKeyword));
         responseList.add(asyncSmallBusinessLibrarySearch(searchKeyword));
 
