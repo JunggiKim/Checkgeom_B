@@ -171,7 +171,6 @@ public class LibraryService {
         return AllLibraryServiceResponse.of(resultList, LibraryType.ALL.getText());
     }
 
-
     public AllLibraryServiceResponse allLibraryAsyncSearch2(String searchKeyword) {
 
 
@@ -180,15 +179,13 @@ public class LibraryService {
         CompletableFuture<LibrarySearchServiceResponse> response3 = this.asyncSmallBusinessLibrarySearch(searchKeyword);
 
 
-
-        return CompletableFuture.allOf(response1, response2, response3)
-                .thenApply(voidResult -> {
-                            List<LibrarySearchServiceResponse> responseList = Stream.of(response1, response2, response3)
-                                    .map(CompletableFuture::join)
-                                    .toList();
-                            return AllLibraryServiceResponse.of(responseList, LibraryType.ALL.getText());
-                        }
+        List<LibrarySearchServiceResponse> resultList = CompletableFuture.allOf(response1, response2, response3)
+                .thenApply(voidResult -> Stream.of(response1, response2, response3)
+                                .map(CompletableFuture::join)
+                                .toList()
                 ).join();
+
+        return AllLibraryServiceResponse.of(resultList, LibraryType.ALL.getText());
     }
 
 }
