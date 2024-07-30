@@ -2,6 +2,10 @@ spring.application.name: core-api
 spring.profiles.active: local
 
 spring:
+
+  threads:
+    virtual:
+      enabled: true
   config:
     import:
       - monitoring.yml
