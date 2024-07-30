@@ -11,6 +11,7 @@ import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -18,6 +19,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.Executor;
 import java.util.stream.Stream;
 
 @Service
@@ -31,16 +33,18 @@ public class LibraryService {
     //      추가 더보기해야 할 것들은 이벤트를 발행을 하고
     //      검색을 한 후 레디스의 Map 타입으로 값을 넣고 그 안에서도 인덱스로 값을 찾으면서 무한스크롤 구현 한번 해 보자
 
-    public LibraryService(GyeonggiDoCyberLibraryReader gyeonggiDoCyberLibraryReader, GyeonggiEducationalElectronicLibraryReader gyeonggiEducationalElectronicLibraryReader, SmallBusinessLibraryReader smallBusinessLibraryReader) {
+    public LibraryService(GyeonggiDoCyberLibraryReader gyeonggiDoCyberLibraryReader, GyeonggiEducationalElectronicLibraryReader gyeonggiEducationalElectronicLibraryReader, SmallBusinessLibraryReader smallBusinessLibraryReader, @Qualifier("virtualThreadExecutor") Executor virtualThreadExecutor) {
         this.gyeonggiDoCyberLibraryReader = gyeonggiDoCyberLibraryReader;
         this.gyeonggiEducationalElectronicLibraryReader = gyeonggiEducationalElectronicLibraryReader;
         this.smallBusinessLibraryReader = smallBusinessLibraryReader;
+        this.virtualThreadExecutor = virtualThreadExecutor;
     }
 
     private final Logger log = LoggerFactory.getLogger(getClass());
     private final GyeonggiDoCyberLibraryReader gyeonggiDoCyberLibraryReader;
     private final GyeonggiEducationalElectronicLibraryReader gyeonggiEducationalElectronicLibraryReader;
     private final SmallBusinessLibraryReader smallBusinessLibraryReader;
+    private final Executor virtualThreadExecutor;
 
 
     // 소장형이든 구독형 최대 첫화면에서는 6개만 보여준다.
@@ -171,21 +175,31 @@ public class LibraryService {
         return AllLibraryServiceResponse.of(resultList, LibraryType.ALL.getText());
     }
 
-    public AllLibraryServiceResponse allLibraryAsyncSearch2(String searchKeyword) {
 
+    public AllLibraryServiceResponse allLibraryVirtualThreadAsyncSearch(String searchKeyword) {
+        CompletableFuture<LibrarySearchServiceResponse> gyeonggiDoCyberResponse =
+                CompletableFuture.supplyAsync(() -> gyeonggiDoCyberLibrarySearch(searchKeyword), virtualThreadExecutor);
+        CompletableFuture<LibrarySearchServiceResponse> gyeonggiEducationalElectronicResponse =
+                CompletableFuture.supplyAsync(() -> gyeonggiEducationalElectronicLibrarySearch(searchKeyword), virtualThreadExecutor);
+        CompletableFuture<LibrarySearchServiceResponse> smallBusinessResponse =
+                CompletableFuture.supplyAsync(() -> smallBusinessLibrarySearch(searchKeyword), virtualThreadExecutor);
 
-        CompletableFuture<LibrarySearchServiceResponse> response1 = this.asyncGyeonggiDoCyberLibrarySearch(searchKeyword);
-        CompletableFuture<LibrarySearchServiceResponse> response2 = this.asyncGyeonggiEducationalElectronicLibrarySearch(searchKeyword);
-        CompletableFuture<LibrarySearchServiceResponse> response3 = this.asyncSmallBusinessLibrarySearch(searchKeyword);
-
-
-        List<LibrarySearchServiceResponse> resultList = CompletableFuture.allOf(response1, response2, response3)
-                .thenApply(voidResult -> Stream.of(response1, response2, response3)
-                                .map(CompletableFuture::join)
-                                .toList()
+        List<LibrarySearchServiceResponse> resultList = CompletableFuture.allOf(
+                        gyeonggiDoCyberResponse,
+                        gyeonggiEducationalElectronicResponse,
+                        smallBusinessResponse
+                )
+                .thenApply(voidResult -> Stream.of(
+                                gyeonggiDoCyberResponse,
+                                gyeonggiEducationalElectronicResponse,
+                                smallBusinessResponse)
+                        .map(CompletableFuture::join)
+                        .toList()
                 ).join();
 
         return AllLibraryServiceResponse.of(resultList, LibraryType.ALL.getText());
     }
+
+
 
 }

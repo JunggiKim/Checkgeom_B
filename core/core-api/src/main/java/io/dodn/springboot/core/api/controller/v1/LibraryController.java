@@ -55,10 +55,10 @@ public class LibraryController {
         validation(searchKeyword);
         return ApiResponse.success(libraryService.allLibraryAsyncSearch(searchKeyword));
     }
-    @GetMapping("/api/v1/allLibraryAsyncSearch2/{searchKeyword}")
-    public ApiResponse<?> allLibraryAsyncSearch2(@PathVariable String searchKeyword) {
+    @GetMapping("/api/v1/allLibraryVirtualThreadAsyncSearch/{searchKeyword}")
+    public ApiResponse<?> allLibraryVirtualThreadAsyncSearch(@PathVariable String searchKeyword) {
         validation(searchKeyword);
-        return ApiResponse.success(libraryService.allLibraryAsyncSearch2(searchKeyword));
+        return ApiResponse.success(libraryService.allLibraryVirtualThreadAsyncSearch(searchKeyword));
     }
 
     private void validation(String searchKeyword) {
