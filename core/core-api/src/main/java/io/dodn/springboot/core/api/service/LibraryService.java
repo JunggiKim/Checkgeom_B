@@ -18,8 +18,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.Executor;
+import java.util.concurrent.*;
 import java.util.stream.Stream;
 
 @Service
@@ -33,7 +32,7 @@ public class LibraryService {
     //      추가 더보기해야 할 것들은 이벤트를 발행을 하고
     //      검색을 한 후 레디스의 Map 타입으로 값을 넣고 그 안에서도 인덱스로 값을 찾으면서 무한스크롤 구현 한번 해 보자
 
-    public LibraryService(GyeonggiDoCyberLibraryReader gyeonggiDoCyberLibraryReader, GyeonggiEducationalElectronicLibraryReader gyeonggiEducationalElectronicLibraryReader, SmallBusinessLibraryReader smallBusinessLibraryReader, @Qualifier("virtualThreadExecutor") Executor virtualThreadExecutor) {
+    public LibraryService(GyeonggiDoCyberLibraryReader gyeonggiDoCyberLibraryReader, GyeonggiEducationalElectronicLibraryReader gyeonggiEducationalElectronicLibraryReader, SmallBusinessLibraryReader smallBusinessLibraryReader, @Qualifier("virtualThreadExecutorService") ExecutorService virtualThreadExecutor) {
         this.gyeonggiDoCyberLibraryReader = gyeonggiDoCyberLibraryReader;
         this.gyeonggiEducationalElectronicLibraryReader = gyeonggiEducationalElectronicLibraryReader;
         this.smallBusinessLibraryReader = smallBusinessLibraryReader;
@@ -44,7 +43,7 @@ public class LibraryService {
     private final GyeonggiDoCyberLibraryReader gyeonggiDoCyberLibraryReader;
     private final GyeonggiEducationalElectronicLibraryReader gyeonggiEducationalElectronicLibraryReader;
     private final SmallBusinessLibraryReader smallBusinessLibraryReader;
-    private final Executor virtualThreadExecutor;
+    private final ExecutorService virtualThreadExecutor;
 
 
     // 소장형이든 구독형 최대 첫화면에서는 6개만 보여준다.
@@ -176,30 +175,29 @@ public class LibraryService {
     }
 
 
-    public AllLibraryServiceResponse allLibraryVirtualThreadAsyncSearch(String searchKeyword) {
-        CompletableFuture<LibrarySearchServiceResponse> gyeonggiDoCyberResponse =
-                CompletableFuture.supplyAsync(() -> gyeonggiDoCyberLibrarySearch(searchKeyword), virtualThreadExecutor);
-        CompletableFuture<LibrarySearchServiceResponse> gyeonggiEducationalElectronicResponse =
-                CompletableFuture.supplyAsync(() -> gyeonggiEducationalElectronicLibrarySearch(searchKeyword), virtualThreadExecutor);
-        CompletableFuture<LibrarySearchServiceResponse> smallBusinessResponse =
-                CompletableFuture.supplyAsync(() -> smallBusinessLibrarySearch(searchKeyword), virtualThreadExecutor);
+    public AllLibraryServiceResponse allLibraryVirtualThreadAsyncSearch(String searchKeyword) throws ExecutionException, InterruptedException {
 
-        List<LibrarySearchServiceResponse> resultList = CompletableFuture.allOf(
-                        gyeonggiDoCyberResponse,
-                        gyeonggiEducationalElectronicResponse,
-                        smallBusinessResponse
-                )
-                .thenApply(voidResult -> Stream.of(
-                                gyeonggiDoCyberResponse,
-                                gyeonggiEducationalElectronicResponse,
-                                smallBusinessResponse)
-                        .map(CompletableFuture::join)
-                        .toList()
-                ).join();
+        Future<LibrarySearchServiceResponse> gyeonggiDoCyberResponse =
+                virtualThreadExecutor.submit(() -> gyeonggiDoCyberLibrarySearch(searchKeyword));
+        Future<LibrarySearchServiceResponse> gyeonggiEducationalElectronicResponse =
+                virtualThreadExecutor.submit(() -> gyeonggiEducationalElectronicLibrarySearch(searchKeyword));
+        Future<LibrarySearchServiceResponse> smallBusinessResponse =
+                virtualThreadExecutor.submit(() -> smallBusinessLibrarySearch(searchKeyword));
+
+        List<LibrarySearchServiceResponse> resultList = List.of(
+                        gyeonggiDoCyberResponse.get(),
+                        gyeonggiEducationalElectronicResponse.get(),
+                        smallBusinessResponse.get()
+                );
+//                .thenApply(voidResult -> Stream.of(
+//                                gyeonggiDoCyberResponse,
+//                                gyeonggiEducationalElectronicResponse,
+//                                smallBusinessResponse)
+//                        .map(CompletableFuture::join)
+//                        .toList()
+//                ).join();
 
         return AllLibraryServiceResponse.of(resultList, LibraryType.ALL.getText());
     }
-
-
 
 }

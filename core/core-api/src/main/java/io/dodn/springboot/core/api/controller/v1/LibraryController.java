@@ -7,6 +7,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.concurrent.ExecutionException;
+
 @RestController
 public class LibraryController {
 
@@ -56,7 +58,7 @@ public class LibraryController {
         return ApiResponse.success(libraryService.allLibraryAsyncSearch(searchKeyword));
     }
     @GetMapping("/api/v1/allLibraryVirtualThreadAsyncSearch/{searchKeyword}")
-    public ApiResponse<?> allLibraryVirtualThreadAsyncSearch(@PathVariable String searchKeyword) {
+    public ApiResponse<?> allLibraryVirtualThreadAsyncSearch(@PathVariable String searchKeyword) throws ExecutionException, InterruptedException {
         validation(searchKeyword);
         return ApiResponse.success(libraryService.allLibraryVirtualThreadAsyncSearch(searchKeyword));
     }
