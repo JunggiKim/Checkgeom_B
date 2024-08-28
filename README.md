@@ -15,6 +15,11 @@
 ![image](https://github.com/user-attachments/assets/abd5516d-ffe1-4e49-8772-c92ad9996dd8)
 간단하게 구상한 aws 아키텍처입니다.
 아직 간단한 웹스크래핑 기능정도밖에 없어 간단하게만 구현을 해 놓은 상태입니다.
+
+
+첫 화면 이며 도서관을 골라서 검색을 할 수있고 검색 가능한 모든도서관을 한번에 검색도 할 수 있습니다.
 ![사이드프로젝트첫화면](https://github.com/user-attachments/assets/105ee0bd-d8fe-4ba4-9d54-90e88291b4f4)
+
+
 
 지금은 서버를 운영 하지 않는 상황입니다~
