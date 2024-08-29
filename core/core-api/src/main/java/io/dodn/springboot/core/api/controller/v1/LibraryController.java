@@ -46,14 +46,14 @@ public class LibraryController {
         return ApiResponse.success(libraryService.smallBusinessLibrarySearch(searchKeyword));
     }
 
-    @GetMapping("/api/v1/allLibrary/{searchKeyword}")
-    public ApiResponse<?> allLibrarySearch(@PathVariable String searchKeyword) {
-        validation(searchKeyword);
-        return ApiResponse.success(libraryService.allLibrarySearch(searchKeyword));
-    }
+    // @GetMapping("/api/v1/allLibrary/{searchKeyword}")
+    // public ApiResponse<?> allLibrarySearch(@PathVariable("searchKeyword") String searchKeyword) {
+    //     validation(searchKeyword);
+    //     return ApiResponse.success(libraryService.allLibrarySearch(searchKeyword));
+    // }
 
-    @GetMapping("/api/v1/allLibraryAsyncSearch/{searchKeyword}")
-    public ApiResponse<?> allLibraryAsyncSearch(@PathVariable String searchKeyword) {
+    @GetMapping("/api/v1/allLibrary/{searchKeyword}")
+    public ApiResponse<?> allLibraryAsyncSearch(@PathVariable("searchKeyword") String searchKeyword) {
         validation(searchKeyword);
         return ApiResponse.success(libraryService.allLibraryAsyncSearch(searchKeyword));
     }
@@ -64,7 +64,6 @@ public class LibraryController {
     }
 
     private void validation(String searchKeyword) {
-
         if (searchKeyword.isBlank()) {
             throw new IllegalArgumentException(searchKeyword + " 빈 문자열입니다.");
         }
