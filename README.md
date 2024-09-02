@@ -12,21 +12,20 @@
 
 
 
-![image](https://github.com/user-attachments/assets/abd5516d-ffe1-4e49-8772-c92ad9996dd8)
 간단하게 구상한 aws 아키텍처입니다.
 아직 웹스크래핑 기능 밖에 없어 간단하게만 구현을 해 놓은 상태입니다.
+![image](https://github.com/user-attachments/assets/abd5516d-ffe1-4e49-8772-c92ad9996dd8)
 
 
-첫 화면 이며 도서관을 골라서 검색을 할 수있고 검색 가능한 모든도서관을 한번에 검색도 할 수 있습니다.
+
 ![사이드프로젝트첫화면](https://github.com/user-attachments/assets/105ee0bd-d8fe-4ba4-9d54-90e88291b4f4)
-
+첫 화면 이며 도서관을 골라서 검색을 할 수있고 검색 가능한 모든도서관을 한번에 검색도 할 수 있습니다.
 
 
 전체 도서관을 검색할 경우 아래 사진처럼 각 도서관의 검색결과가 보여집니다.
 전체 검색결과가 더 있는 경우 더보기 버튼을 클릭해 해당도서관의 홈페이지에서 볼 수가 있습니다.
-
-경기도사이버도서관의 경우 더보기 버튼이 2개인데 이는 구독형 과 소장형을 구분해서 자체적으로 관리하기에 두개의 더보기 링크를 제공했습니다.
 ![경기도사이버도서관](https://github.com/user-attachments/assets/72c145ee-287d-40d0-9206-8f2ba2523e1d)
+경기도사이버도서관의 경우 더보기 버튼이 2개인데 이는 구독형 과 소장형을 구분해서 자체적으로 관리하기에 두개의 더보기 링크를 제공했습니다.
 
 ![경기교육전자도서관](https://github.com/user-attachments/assets/ee7cc1ae-4d23-4244-832e-6c420f491e09)
 
