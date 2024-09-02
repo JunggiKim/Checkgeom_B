@@ -12,9 +12,10 @@
 
 
 
+
+![image](https://github.com/user-attachments/assets/abd5516d-ffe1-4e49-8772-c92ad9996dd8)
 간단하게 구상한 aws 아키텍처입니다.
 아직 웹스크래핑 기능 밖에 없어 간단하게만 구현을 해 놓은 상태입니다.
-![image](https://github.com/user-attachments/assets/abd5516d-ffe1-4e49-8772-c92ad9996dd8)
 <br/>
 
 
