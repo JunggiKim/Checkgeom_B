@@ -1,6 +1,7 @@
 package io.dodn.springboot.core.api.service;
 
 import io.dodn.springboot.core.api.domain.LibraryType;
+import io.dodn.springboot.core.api.domain.SearchType;
 import io.dodn.springboot.core.api.domain.gyeonggiEducationalElectronicLibrary.gyeonggiEducationalElectronicLibrary;
 import io.dodn.springboot.core.api.domain.gyeonggidocyberlibrary.GyeonggiDoCyberLibraryMoreViewType;
 import io.dodn.springboot.core.api.service.response.AllLibraryServiceResponse;
@@ -14,7 +15,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -22,8 +22,7 @@ import java.util.concurrent.*;
 import java.util.stream.Stream;
 
 @Service
-@Transactional
-public class LibraryService {
+public class LibrarySearchServiceImpl implements LibrarySearchService{
 
 
     // TODO EXAMPLE
@@ -32,41 +31,36 @@ public class LibraryService {
     //      추가 더보기해야 할 것들은 이벤트를 발행을 하고
     //      검색을 한 후 레디스의 Map 타입으로 값을 넣고 그 안에서도 인덱스로 값을 찾으면서 무한스크롤 구현 한번 해 보자
 
-    public LibraryService(GyeonggiDoCyberLibraryReader gyeonggiDoCyberLibraryReader, GyeonggiEducationalElectronicLibraryReader gyeonggiEducationalElectronicLibraryReader, SmallBusinessLibraryReader smallBusinessLibraryReader, @Qualifier("virtualThreadExecutorService") ExecutorService virtualThreadExecutor) {
+    public LibrarySearchServiceImpl(GyeonggiDoCyberLibraryReader gyeonggiDoCyberLibraryReader,
+        GyeonggiEducationalElectronicLibraryReader gyeonggiEducationalElectronicLibraryReader,
+        SmallBusinessLibraryReader smallBusinessLibraryReader) {
         this.gyeonggiDoCyberLibraryReader = gyeonggiDoCyberLibraryReader;
         this.gyeonggiEducationalElectronicLibraryReader = gyeonggiEducationalElectronicLibraryReader;
         this.smallBusinessLibraryReader = smallBusinessLibraryReader;
-        this.virtualThreadExecutor = virtualThreadExecutor;
     }
 
     private final Logger log = LoggerFactory.getLogger(getClass());
     private final GyeonggiDoCyberLibraryReader gyeonggiDoCyberLibraryReader;
     private final GyeonggiEducationalElectronicLibraryReader gyeonggiEducationalElectronicLibraryReader;
     private final SmallBusinessLibraryReader smallBusinessLibraryReader;
-    private final ExecutorService virtualThreadExecutor;
 
 
     // 소장형이든 구독형 최대 첫화면에서는 6개만 보여준다.
     // 그래서 숫자 값을 찾아서 만약 총값이 6개이상이라면 더보기칸을 눌러서 들어간다
 
     // gyeonggiDoCyberLibrarySearch 의 경우 가져오는게 api로 변경이 있을 수 있기에 AOP로 따로 뺴두도록하자 웹드라이버의 기능을 빼 둘수가있나 한번 알아보자
-    public LibrarySearchServiceResponse gyeonggiDoCyberLibrarySearch(String keyword) {
+    @Override
+    public LibrarySearchServiceResponse gyeonggiDoCyberLibrarySearch(String searchKeyword) {
 
-        final Element htmlBody = gyeonggiDoCyberLibraryReader.getGyeonggiDoCyberLibraryHtmlBody(keyword);
+        final Element htmlBody = gyeonggiDoCyberLibraryReader.getGyeonggiDoCyberLibraryHtmlBody(searchKeyword);
 
-        final List<String> moreViewLink = gyeonggiDoCyberLibraryReader.getMoreViewLinks(keyword, htmlBody);
+        final List<String> moreViewLink = gyeonggiDoCyberLibraryReader.getMoreViewLinks(searchKeyword, htmlBody);
 
         final List<LibrarySearchServiceResponse.BookDto> bookDtoList = gyeonggiDoCyberLibraryReader.searchBookList(htmlBody);
 
         final int bookSearchTotalCount = gyeonggiDoCyberLibraryReader.getBookSearchTotalCount(htmlBody);
 
-        return LibrarySearchServiceResponse.of(bookDtoList, bookSearchTotalCount, moreViewLink, LibraryType.GYEONGGIDO_CYBER.getText());
-    }
-
-    @Async
-    public CompletableFuture<LibrarySearchServiceResponse> asyncGyeonggiDoCyberLibrarySearch(String keyword) {
-        return CompletableFuture.completedFuture(this.gyeonggiEducationalElectronicLibrarySearch(keyword));
-
+        return LibrarySearchServiceResponse.of(bookDtoList, bookSearchTotalCount, moreViewLink, LibraryType.GYEONGGIDO_CYBER.getKoreanText());
     }
 
 
@@ -94,7 +88,8 @@ public class LibraryService {
 
 
     // 기본 검색한 책 목록과 책 총 결과 수 와 검색결과 모두 볼수있는 더보기링크 까지 보내주자
-    public LibrarySearchServiceResponse gyeonggiEducationalElectronicLibrarySearch(String keyword) {
+    @Override
+    public LibrarySearchServiceResponse gyeonggiEducationalElectronicLibrarySearch(String keyword ) {
 
         final String searchUrl = gyeonggiEducationalElectronicLibrary.basicSearchUrlCreate(keyword);
 
@@ -106,15 +101,11 @@ public class LibraryService {
 
         final String totalCount = gyeonggiEducationalElectronicLibraryReader.getBookSearchTotalCount(document);
 
-        return LibrarySearchServiceResponse.of(bookItemDtos, Integer.parseInt(totalCount), moreViewLinkList, LibraryType.GYEONGGI_EDUCATIONAL_ELECTRONIC.getText());
-    }
-
-    @Async
-    public CompletableFuture<LibrarySearchServiceResponse> asyncGyeonggiEducationalElectronicLibrarySearch(String keyword) {
-        return CompletableFuture.completedFuture(this.gyeonggiEducationalElectronicLibrarySearch(keyword));
+        return LibrarySearchServiceResponse.of(bookItemDtos, Integer.parseInt(totalCount), moreViewLinkList, LibraryType.GYEONGGI_EDUCATIONAL_ELECTRONIC.getKoreanText());
     }
 
 
+    @Override
     public LibrarySearchServiceResponse smallBusinessLibrarySearch(String searchKeyword) {
 
         // TODO 기본 URL 불러오기까지는 가능하게 해놨다.
@@ -131,32 +122,17 @@ public class LibraryService {
         final List<String> moreViewUrlList = smallBusinessLibraryReader.getMoreViewLinks(searchKeyword, totalCount);
 
 
-        return LibrarySearchServiceResponse.of(bookDtoList, totalCount, moreViewUrlList, LibraryType.SMALL_BUSINESS.getText());
+        return LibrarySearchServiceResponse.of(bookDtoList, totalCount, moreViewUrlList, LibraryType.SMALL_BUSINESS.getKoreanText());
 
     }
 
-    @Async
-    public CompletableFuture<LibrarySearchServiceResponse> asyncSmallBusinessLibrarySearch(String searchKeyword) {
-        return CompletableFuture.completedFuture(this.smallBusinessLibrarySearch(searchKeyword));
-    }
 
-
-    public AllLibraryServiceResponse allLibrarySearch(String searchKeyword) {
-
-        final List<LibrarySearchServiceResponse> responseList = new ArrayList<>();
-        responseList.add(gyeonggiDoCyberLibrarySearch(searchKeyword));
-        responseList.add(gyeonggiEducationalElectronicLibrarySearch(searchKeyword));
-        responseList.add(smallBusinessLibrarySearch(searchKeyword));
-
-        return AllLibraryServiceResponse.of(responseList, LibraryType.ALL.getText());
-    }
-
-
-    public AllLibraryServiceResponse allLibraryAsyncSearch(String searchKeyword) {
+    @Override
+    public AllLibraryServiceResponse allLibraryAsyncSearch(String searchKeyword ) {
 
         CompletableFuture<LibrarySearchServiceResponse> gyeonggiDoCyberResponse = CompletableFuture.supplyAsync(() -> gyeonggiDoCyberLibrarySearch(searchKeyword));
-        CompletableFuture<LibrarySearchServiceResponse> gyeonggiEducationalElectronicResponse = CompletableFuture.supplyAsync(() -> gyeonggiEducationalElectronicLibrarySearch(searchKeyword));
-        CompletableFuture<LibrarySearchServiceResponse> smallBusinessResponse = CompletableFuture.supplyAsync(() -> smallBusinessLibrarySearch(searchKeyword));
+        CompletableFuture<LibrarySearchServiceResponse> gyeonggiEducationalElectronicResponse = CompletableFuture.supplyAsync(() -> gyeonggiEducationalElectronicLibrarySearch(searchKeyword ));
+        CompletableFuture<LibrarySearchServiceResponse> smallBusinessResponse = CompletableFuture.supplyAsync(() -> smallBusinessLibrarySearch(searchKeyword ));
 
         List<LibrarySearchServiceResponse> resultList = CompletableFuture.allOf(
                         gyeonggiDoCyberResponse,
@@ -171,33 +147,25 @@ public class LibraryService {
                         .toList()
                 ).join();
 
-        return AllLibraryServiceResponse.of(resultList, LibraryType.ALL.getText());
+        return AllLibraryServiceResponse.of(resultList, LibraryType.ALL.getKoreanText());
     }
 
 
-    public AllLibraryServiceResponse allLibraryVirtualThreadAsyncSearch(String searchKeyword) throws ExecutionException, InterruptedException {
-
-        Future<LibrarySearchServiceResponse> gyeonggiDoCyberResponse =
-                virtualThreadExecutor.submit(() -> gyeonggiDoCyberLibrarySearch(searchKeyword));
-        Future<LibrarySearchServiceResponse> gyeonggiEducationalElectronicResponse =
-                virtualThreadExecutor.submit(() -> gyeonggiEducationalElectronicLibrarySearch(searchKeyword));
-        Future<LibrarySearchServiceResponse> smallBusinessResponse =
-                virtualThreadExecutor.submit(() -> smallBusinessLibrarySearch(searchKeyword));
-
-        List<LibrarySearchServiceResponse> resultList = List.of(
-                        gyeonggiDoCyberResponse.get(),
-                        gyeonggiEducationalElectronicResponse.get(),
-                        smallBusinessResponse.get()
-                );
-//                .thenApply(voidResult -> Stream.of(
-//                                gyeonggiDoCyberResponse,
-//                                gyeonggiEducationalElectronicResponse,
-//                                smallBusinessResponse)
-//                        .map(CompletableFuture::join)
-//                        .toList()
-//                ).join();
-
-        return AllLibraryServiceResponse.of(resultList, LibraryType.ALL.getText());
-    }
+    // public AllLibraryServiceResponse allLibraryVirtualThreadAsyncSearch(String searchKeyword) throws ExecutionException, InterruptedException {
+    //
+    //     Future<LibrarySearchServiceResponse> gyeonggiDoCyberResponse =
+    //             virtualThreadExecutor.submit(() -> gyeonggiDoCyberLibrarySearch(searchKeyword, searchType));
+    //     Future<LibrarySearchServiceResponse> gyeonggiEducationalElectronicResponse =
+    //             virtualThreadExecutor.submit(() -> gyeonggiEducationalElectronicLibrarySearch(searchKeyword));
+    //     Future<LibrarySearchServiceResponse> smallBusinessResponse =
+    //             virtualThreadExecutor.submit(() -> smallBusinessLibrarySearch(searchKeyword));
+    //     List<LibrarySearchServiceResponse> resultList = List.of(
+    //                     gyeonggiDoCyberResponse.get(),
+    //                     gyeonggiEducationalElectronicResponse.get(),
+    //                     smallBusinessResponse.get()
+    //             );
+    //
+    //     return AllLibraryServiceResponse.of(resultList, LibraryType.ALL.getKoreanText());
+    // }
 
 }

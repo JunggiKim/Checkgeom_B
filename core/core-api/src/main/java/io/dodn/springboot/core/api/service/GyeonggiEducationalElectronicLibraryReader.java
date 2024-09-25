@@ -29,7 +29,6 @@ public class GyeonggiEducationalElectronicLibraryReader {
         WebDriver webDriver = openWebBrowser(searchUrl);
         Document document = Jsoup.parse(webDriver.getPageSource());
         webDriver.quit();
-
         return document;
     }
 

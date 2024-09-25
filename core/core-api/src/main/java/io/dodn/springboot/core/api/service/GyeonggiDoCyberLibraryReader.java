@@ -1,5 +1,6 @@
 package io.dodn.springboot.core.api.service;
 
+import io.dodn.springboot.core.api.domain.SearchType;
 import io.dodn.springboot.core.api.domain.gyeonggidocyberlibrary.GyeonggiDoCyberLibrary;
 import io.dodn.springboot.core.api.domain.gyeonggidocyberlibrary.GyeonggiDoCyberLibraryBookType;
 import io.dodn.springboot.core.api.domain.gyeonggidocyberlibrary.GyeonggiDoCyberLibraryMoreViewType;
@@ -126,8 +127,9 @@ public class GyeonggiDoCyberLibraryReader {
     }
 
 
-    public Element getGyeonggiDoCyberLibraryHtmlBody(String keyword) {
-        String basicSearchUrl = GyeonggiDoCyberLibrary.basicSearchUrlCreate(keyword);
+    public Element getGyeonggiDoCyberLibraryHtmlBody(String searchKeyword ) {
+        String basicSearchUrl = GyeonggiDoCyberLibrary.basicSearchUrlCreate(searchKeyword );
+        System.out.println("URL임 = " + basicSearchUrl);
         WebDriver webDriver = openWebBrowser(basicSearchUrl);
         Element htmlBody = Jsoup.parse(webDriver.getPageSource()).body();
         webDriver.quit();
@@ -146,18 +148,17 @@ public class GyeonggiDoCyberLibraryReader {
     }
 
 
-    public List<String> getMoreViewLinks(String keyword, Element htmlBody) {
+    public List<String> getMoreViewLinks(String searchKeyword, Element htmlBody) {
         List<GyeonggiDoCyberLibraryMoreViewType> moreViewList = isMoreViewList(htmlBody);
 
         boolean isMoreView = moreViewList.stream().anyMatch(GyeonggiDoCyberLibraryMoreViewType::isMoreView);
 
-        List<String> moreViewLink = new ArrayList<>();
         if (isMoreView) {
-            moreViewLink = moreViewList.stream()
-                    .map(viewType -> GyeonggiDoCyberLibrary.moreViewSearchUrlCreate(keyword, viewType))
+            return moreViewList.stream()
+                    .map(viewType -> GyeonggiDoCyberLibrary.moreViewSearchUrlCreate(searchKeyword, viewType))
                     .toList();
         }
-        return moreViewLink;
+           return new ArrayList<>();
     }
 
 

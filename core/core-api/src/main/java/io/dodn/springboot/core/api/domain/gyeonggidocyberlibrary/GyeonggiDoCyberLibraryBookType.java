@@ -8,7 +8,6 @@ public enum GyeonggiDoCyberLibraryBookType {
     SUBSCRIPTION("구독형", "SUBS");
 
     private final String name;
-
     private final String urlType;
 
     GyeonggiDoCyberLibraryBookType(String name, String urlType) {

@@ -3,6 +3,7 @@ package io.dodn.springboot.core.api.service;
 import io.dodn.springboot.core.api.config.IntegrationTest;
 import io.dodn.springboot.core.api.config.MockTest;
 import io.dodn.springboot.core.api.domain.LibraryType;
+import io.dodn.springboot.core.api.domain.SearchType;
 import io.dodn.springboot.core.api.service.response.AllLibraryServiceResponse;
 import io.dodn.springboot.core.api.service.response.LibrarySearchServiceResponse;
 import org.jsoup.nodes.Element;
@@ -16,13 +17,13 @@ import java.util.Collections;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.BDDMockito.given;
 
 class LibraryServiceMockTest extends MockTest {
 
     @InjectMocks
-    private LibraryService libraryService;
+    private LibrarySearchService libraryService;
 
     @Mock
     private GyeonggiDoCyberLibraryReader gyeonggiDoCyberLibraryReader;
@@ -60,18 +61,18 @@ class LibraryServiceMockTest extends MockTest {
         // given
         String searchKeyword = "처음";
         Element example = new Element(org.jsoup.parser.Tag.valueOf("<h1>"), "");
-
-        given(gyeonggiDoCyberLibraryReader.getGyeonggiDoCyberLibraryHtmlBody(any())).willReturn(example);
+        SearchType searchType = SearchType.ALL;
+        given(gyeonggiDoCyberLibraryReader.getGyeonggiDoCyberLibraryHtmlBody(anyString())).willReturn(example);
         given(gyeonggiDoCyberLibraryReader.getMoreViewLinks(any(String.class),any())).willReturn(Collections.emptyList());
         given(gyeonggiDoCyberLibraryReader.searchBookList(any(Element.class))).willReturn(Collections.emptyList());
         given(gyeonggiDoCyberLibraryReader.getBookSearchTotalCount(any(Element.class))).willReturn(0);
 
         // when
-        LibrarySearchServiceResponse librarySearchServiceResponse = libraryService.gyeonggiDoCyberLibrarySearch(searchKeyword);
+        LibrarySearchServiceResponse librarySearchServiceResponse = libraryService.gyeonggiDoCyberLibrarySearch(searchKeyword );
 
         // then
 
-        assertThat(librarySearchServiceResponse.libraryTypeText()).isEqualTo(LibraryType.GYEONGGIDO_CYBER.getText());
+        assertThat(librarySearchServiceResponse.libraryTypeText()).isEqualTo(LibraryType.GYEONGGIDO_CYBER.getEnglishText());
         assertThat(librarySearchServiceResponse.bookSearchTotalCount()).isZero();
         assertThat(librarySearchServiceResponse.moreViewLink()).isEmpty();
         assertThat(librarySearchServiceResponse.bookDtoList()).isEmpty();

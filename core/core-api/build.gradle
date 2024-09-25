@@ -10,8 +10,7 @@ dependencies {
 
     testImplementation project(":tests:api-docs")
 
-
-
+    implementation 'org.springframework.boot:spring-boot-starter-validation'
     implementation 'org.seleniumhq.selenium:selenium-java:4.6.0'
     implementation 'org.htmlunit:htmlunit:4.3.0'
     implementation 'org.jsoup:jsoup:1.7.2'
