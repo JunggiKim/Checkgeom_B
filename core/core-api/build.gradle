@@ -14,6 +14,7 @@ dependencies {
     implementation 'org.seleniumhq.selenium:selenium-java:4.6.0'
     implementation 'org.htmlunit:htmlunit:4.3.0'
     implementation 'org.jsoup:jsoup:1.7.2'
+    implementation group: 'io.github.bonigarcia', name: 'webdrivermanager', version: '5.9.2'
 
     implementation 'org.springframework.boot:spring-boot-starter-web'
 }

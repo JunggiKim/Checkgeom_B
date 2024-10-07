@@ -61,7 +61,6 @@ class LibraryServiceMockTest extends MockTest {
         // given
         String searchKeyword = "처음";
         Element example = new Element(org.jsoup.parser.Tag.valueOf("<h1>"), "");
-        SearchType searchType = SearchType.ALL;
         given(gyeonggiDoCyberLibraryReader.getGyeonggiDoCyberLibraryHtmlBody(anyString())).willReturn(example);
         given(gyeonggiDoCyberLibraryReader.getMoreViewLinks(any(String.class),any())).willReturn(Collections.emptyList());
         given(gyeonggiDoCyberLibraryReader.searchBookList(any(Element.class))).willReturn(Collections.emptyList());

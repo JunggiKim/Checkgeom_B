@@ -7,15 +7,13 @@ import org.openqa.selenium.support.ui.WebDriverWait;
 
 import java.time.Duration;
 
+import io.github.bonigarcia.wdm.WebDriverManager;
+
 public class WebDriverUtil {
 
-    private static final String WEB_DRIVER_PATH = "C:\\toy\\chromedriver-win64\\chromedriver-win64\\chromedriver.exe"; // WebDriver
-    private static final String WEB_DRIVER = "webdriver.chrome.driver";
-
     public static WebDriver createWebDriver() {
-        System.setProperty(WEB_DRIVER, WEB_DRIVER_PATH);
-        ChromeOptions chromeOptions = createOptions();
-        return new ChromeDriver(chromeOptions);
+        WebDriverManager.chromedriver().setup();
+        return new ChromeDriver(createOptions());
     }
 
     public static WebDriverWait createWebDriverWait(WebDriver webDriver) {
