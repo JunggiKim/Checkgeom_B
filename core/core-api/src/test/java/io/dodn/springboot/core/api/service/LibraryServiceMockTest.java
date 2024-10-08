@@ -23,7 +23,7 @@ import static org.mockito.BDDMockito.given;
 class LibraryServiceMockTest extends MockTest {
 
     @InjectMocks
-    private LibrarySearchService libraryService;
+    private LibrarySearchServiceImpl libraryService;
 
     @Mock
     private GyeonggiDoCyberLibraryReader gyeonggiDoCyberLibraryReader;
@@ -71,7 +71,7 @@ class LibraryServiceMockTest extends MockTest {
 
         // then
 
-        assertThat(librarySearchServiceResponse.libraryTypeText()).isEqualTo(LibraryType.GYEONGGIDO_CYBER.getEnglishText());
+        assertThat(librarySearchServiceResponse.libraryTypeText()).isEqualTo(LibraryType.GYEONGGIDO_CYBER.getKoreanText());
         assertThat(librarySearchServiceResponse.bookSearchTotalCount()).isZero();
         assertThat(librarySearchServiceResponse.moreViewLink()).isEmpty();
         assertThat(librarySearchServiceResponse.bookDtoList()).isEmpty();

@@ -129,7 +129,6 @@ public class GyeonggiDoCyberLibraryReader {
 
     public Element getGyeonggiDoCyberLibraryHtmlBody(String searchKeyword ) {
         String basicSearchUrl = GyeonggiDoCyberLibrary.basicSearchUrlCreate(searchKeyword );
-        System.out.println("URL임 = " + basicSearchUrl);
         WebDriver webDriver = openWebBrowser(basicSearchUrl);
         Element htmlBody = Jsoup.parse(webDriver.getPageSource()).body();
         webDriver.quit();
