@@ -91,6 +91,7 @@ public class LibrarySearchServiceImpl implements LibrarySearchService{
     @Override
     public LibrarySearchServiceResponse gyeonggiEducationalElectronicLibrarySearch(String keyword ) {
 
+
         final String searchUrl = gyeonggiEducationalElectronicLibrary.basicSearchUrlCreate(keyword);
 
         final Document document = gyeonggiEducationalElectronicLibraryReader.getGyeonggiEducationalElectronicLibraryHtml(searchUrl);
@@ -101,7 +102,12 @@ public class LibrarySearchServiceImpl implements LibrarySearchService{
 
         final String totalCount = gyeonggiEducationalElectronicLibraryReader.getBookSearchTotalCount(document);
 
-        return LibrarySearchServiceResponse.of(bookItemDtos, Integer.parseInt(totalCount), moreViewLinkList, LibraryType.GYEONGGI_EDUCATIONAL_ELECTRONIC.getKoreanText());
+        return LibrarySearchServiceResponse.of(
+                bookItemDtos,
+                Integer.parseInt(totalCount),
+                moreViewLinkList,
+                LibraryType.GYEONGGI_EDUCATIONAL_ELECTRONIC.getKoreanText()
+        );
     }
 
 
