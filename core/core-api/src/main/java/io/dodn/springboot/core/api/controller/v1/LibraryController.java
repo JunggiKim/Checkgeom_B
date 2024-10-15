@@ -55,6 +55,11 @@ public class LibraryController {
         return ApiResponse.success(libraryService.allLibraryAsyncSearch(searchKeyword ));
     }
 
+    @GetMapping("/api/v1/ok")
+    public ApiResponse<?> check() {
+        return ApiResponse.success();
+    }
+
 
     // @GetMapping("/api/v1/allLibrary2")
     // public ApiResponse<?> allLibraryAsyncSearch(

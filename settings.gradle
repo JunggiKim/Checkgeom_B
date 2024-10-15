@@ -7,7 +7,7 @@ pluginManagement {
     }
 }
 
-rootProject.name = 'spring-boot-java-template'
+rootProject.name = 'Check_geom'
 
 include 'core:core-enum'
 include 'core:core-api'
@@ -16,3 +16,4 @@ include 'tests:api-docs'
 include 'support:logging'
 include 'support:monitoring'
 include 'clients:client-example'
+
