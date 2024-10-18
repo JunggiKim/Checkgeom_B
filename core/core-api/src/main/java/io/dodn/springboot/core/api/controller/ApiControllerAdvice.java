@@ -1,5 +1,7 @@
 package io.dodn.springboot.core.api.controller;
 
+import java.time.LocalDateTime;
+
 import io.dodn.springboot.core.api.support.error.CoreApiException;
 import io.dodn.springboot.core.api.support.error.ErrorType;
 import io.dodn.springboot.core.api.support.response.ApiResponse;
@@ -29,6 +31,7 @@ public class ApiControllerAdvice {
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ApiResponse<?>> handleException(Exception e) {
         log.error("Exception : {}", e.getMessage(), e);
+        log.error("Time : {}", LocalDateTime.now());
         return new ResponseEntity<>(ApiResponse.error(ErrorType.DEFAULT_ERROR), ErrorType.DEFAULT_ERROR.getStatus());
     }
     @ExceptionHandler(MethodArgumentNotValidException.class)
