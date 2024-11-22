@@ -3,7 +3,7 @@ package io.dodn.springboot.core.api.domain.gyeonggidocyberlibrary;
 import io.dodn.springboot.core.api.domain.SearchType;
 
 public class GyeonggiDoCyberLibrary {
-// all
+
     private static final String BASIC_SEARCH_URL = "https://ebook.library.kr/search?listType=list&keyword=";
     private static final String MORE_VIEW_SEARCH_URL = "https://ebook.library.kr/search/type?searchType=all&listType=list&asc=desc&keyword=";
     public static final String STAY_CSS = "h4.summaryHeading i";
